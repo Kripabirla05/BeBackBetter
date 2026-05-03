@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress — Be Back Better</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* Sem tabs */
+.sem-tabs-bar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px; }
+.stab {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: var(--trans);
+  display: flex; align-items: center; gap: 6px;
+}
+.stab:hover { border-color: var(--accent2); color: var(--accent2); }
+.stab.active { background: var(--ink); color: white; border-color: var(--ink); }
+.stab.locked { opacity: 0.5; cursor: not-allowed; }
+.stab.locked:hover { border-color: var(--border); color: var(--muted); }
+
+/* Charts */
+.chart-card { background: white; border-radius: var(--r); border: 1px solid var(--border); padding: 28px; box-shadow: var(--shadow-sm); }
+.chart-card h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 20px; display:flex; align-items:center; gap:8px; }
+.chart-wrap { position: relative; height: 260px; }
+
+/* Subject panels */
+.subject-progress-card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--trans);
+  cursor: pointer;
+}
+.subject-progress-card:hover { border-color: var(--accent2); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.subject-progress-card.active-sub { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.sp-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.sp-name { font-size:0.9rem; font-weight:700; color:var(--ink); }
+.sp-code { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); margin-top:2px; }
+.sp-grade { font-size:1.4rem; font-weight:800; color:var(--accent2); }
+.sp-percent { font-size:0.75rem; color:var(--muted); text-align:right; }
+
+/* Assignment panel */
+.assign-panel {
+  background: white;
+  border-radius: var(--r);
+  border: 1.5px solid var(--accent2);
+  padding: 24px;
+  margin-top: 20px;
+  animation: fadeUp 0.3s ease;
+}
+.assign-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  margin-bottom: 8px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  transition: var(--trans);
+}
+.assign-row:hover { background: rgba(37,99,235,0.04); }
+.assign-row:last-child { margin-bottom: 0; }
+.ar-title { font-size:0.875rem; font-weight:600; color:var(--ink); }
+.ar-due { font-size:0.75rem; color:var(--muted); margin-top:2px; display:flex; align-items:center; gap:4px; }
+.ar-score { font-size:1rem; font-weight:800; color:var(--ink); font-family:'DM Mono',monospace; }
+
+/* Degree audit bar */
+.audit-row { margin-bottom: 20px; }
+.audit-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.audit-name { font-size:0.875rem; font-weight:600; color:var(--ink); }
+.audit-num { font-family:'DM Mono',monospace; font-size:0.78rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<main>
+<section class="hero" style="padding:70px 48px;">
+  <div class="hero-inner anim-fade-up">
+    <h1>Academic Progress</h1>
+    <p>Detailed view of your grades, assignments, credit completion, and degree audit.</p>
+  </div>
+</section>
+
+<!-- Overall stats -->
+<section style="padding:50px 0 0;">
+  <div class="container">
+    <div class="grid-4" style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+      <div class="stat-card anim-fade-up delay-1">
+        <div class="icon-circle blue"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div><div class="stat-val" id="progCgpa">9.2</div><div class="stat-lbl">CGPA</div></div>
+      </div>
+      <div class="stat-card anim-fade-up delay-2">
+        <div class="icon-circle green"><i class="fa-solid fa-award"></i></div>
+        <div><div class="stat-val" id="progEarned">13</div><div class="stat-lbl">Credits Earned</div></div>
+      </div>
+      <div class="stat-card anim-fade-up delay-3">
+        <div class="icon-circle red"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div><div class="stat-val" id="progRemaining">107</div><div class="stat-lbl">Credits Remaining</div></div>
+      </div>
+      <div class="stat-card anim-fade-up delay-4">
+        <div class="icon-circle yellow"><i class="fa-solid fa-percent"></i></div>
+        <div><div class="stat-val" id="progPercent">10.8%</div><div class="stat-lbl">Degree Complete</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Charts row -->
+<section style="padding:40px 0;">
+  <div class="container">
+    <div class="grid-2" style="display:grid; grid-template-columns:1.6fr 1fr; gap:24px;">
+      <div class="chart-card anim-fade-up delay-1">
+        <h3><i class="fa-solid fa-chart-bar" style="color:var(--accent2);"></i> Semester 2 — Subject Scores (%)</h3>
+        <div class="chart-wrap"><canvas id="gradeChart"></canvas></div>
+      </div>
+      <div class="chart-card anim-fade-up delay-2">
+        <h3><i class="fa-solid fa-chart-pie" style="color:var(--accent);"></i> Credit Overview</h3>
+        <div class="chart-wrap" style="height:220px;"><canvas id="creditChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Semester Tabs -->
+<section style="padding:20px 0 60px; background:var(--paper);">
+  <div class="container">
+    <div class="section-title">Semester Breakdown</div>
+    <div class="sem-tabs-bar" id="semTabs"></div>
+    <div id="semContent"></div>
+  </div>
+</section>
+
+<footer>
+  <div>&copy; 2026 Be Back Better — University Progress System</div>
+  <div class="foot-links">
+    <a href="home.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+const loggedInUser = sessionStorage.getItem('loggedInUser') || '24CSE001';
+const users = JSON.parse(localStorage.getItem('users') || '{}');
+const user = users[loggedInUser] || { cgpa: 9.2, creditsEarned: 13, sem2progress: [91, 88, 98, 85], creditData: [13, 6, 101] };
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('progCgpa').textContent = user.cgpa;
+  document.getElementById('progEarned').textContent = user.creditsEarned;
+  document.getElementById('progRemaining').textContent = user.creditData[2];
+  document.getElementById('progPercent').textContent = ((user.creditsEarned / 120) * 100).toFixed(1) + '%';
+});
+
+// Charts
+const gradeCtx = document.getElementById('gradeChart').getContext('2d');
+new Chart(gradeCtx, {
+  type: 'bar',
+  data: {
+    labels: ['C Programming', 'Frontend Eng.', 'AI Algorithms', 'OS & Linux'],
+    datasets: [{
+      label: 'Score (%)',
+      data: user.sem2progress,
+      backgroundColor: ['rgba(37,99,235,0.8)','rgba(230,57,70,0.8)','rgba(22,163,74,0.8)','rgba(234,179,8,0.8)'],
+      borderRadius: 8, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 100, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font:{ family:'Sora',size:11 } } },
+      x: { grid: { display: false }, ticks: { font:{ family:'Sora',size:11 } } }
+    }
+  }
+});
+const creditCtx = document.getElementById('creditChart').getContext('2d');
+new Chart(creditCtx, {
+  type: 'doughnut',
+  data: {
+    labels: [`Earned (${user.creditData[0]})`, `In Progress (${user.creditData[1]})`, `Remaining (${user.creditData[2]})`],
+    datasets: [{ data: user.creditData, backgroundColor:['#2563eb','#e63946','#e2ddd4'], borderWidth:0, hoverOffset:6 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position:'bottom', labels:{ font:{family:'Sora',size:11}, padding:12 } } }
+  }
+});
+
+// Semester tabs
+const semData = {
+  1: {
+    subjects: [
+      { code:'24CSE0101', name:'Introduction to Programming', credits:3, grade:'A+', score:95, status:'Completed' },
+      { code:'24MAT0101', name:'Engineering Mathematics I', credits:4, grade:'A', score:88, status:'Completed' },
+      { code:'24PHY0101', name:'Applied Physics', credits:3, grade:'B+', score:80, status:'Completed' },
+      { code:'24HUM0101', name:'Communication Skills', credits:2, grade:'A', score:89, status:'Completed' },
+    ]
+  },
+  2: {
+    subjects: [
+      { code:'24CSE0107', name:'Fundamentals of C Programming', credits:4, grade: (user.sem2progress[0] >= 90 ? 'A+' : (user.sem2progress[0] >= 80 ? 'A' : 'B+')), score: user.sem2progress[0], status:'Completed' },
+      { code:'25CSE0105', name:'Frontend Engineering — I', credits:3, grade: (user.sem2progress[1] >= 90 ? 'A+' : (user.sem2progress[1] >= 80 ? 'A' : 'B+')), score: user.sem2progress[1], status:'In Progress' },
+      { code:'25CAI0102', name:'Foundations of AI Algorithms', credits:3, grade: (user.sem2progress[2] >= 90 ? 'A+' : (user.sem2progress[2] >= 80 ? 'A' : 'B+')), score: user.sem2progress[2], status:'Completed' },
+      { code:'25CSE0104', name:'OS & Linux Fundamentals', credits:3, grade: (user.sem2progress[3] >= 90 ? 'A+' : (user.sem2progress[3] >= 80 ? 'A' : 'B+')), score: user.sem2progress[3], status:'In Progress' },
+    ]
+  }
+};
+const assignData = {
+  '24CSE0107': [
+    { title:'Assignment 1 – Variables & Loops', due:'Submitted', score:'18/20' },
+    { title:'Assignment 2 – Functions & Arrays', due:'Submitted', score:'19/20' },
+    { title:'Lab Test – Pointers', due:'Submitted', score:'28/30' },
+  ],
+  '25CSE0105': [
+    { title:'Lab 1 – HTML Basics', due:'Submitted', score:'20/20' },
+    { title:'Lab 2 – CSS Flexbox', due:'Due: 05-May', score:'—' },
+    { title:'Mini Project – Portfolio', due:'Due: 15-May', score:'—' },
+  ],
+  '25CAI0102': [
+    { title:'Assignment 1 – Search Algorithms', due:'Submitted', score:'15/15' },
+    { title:'Assignment 2 – Heuristics', due:'Submitted', score:'14/15' },
+    { title:'Final Report', due:'Submitted', score:'48/50' },
+  ],
+  '25CSE0104': [
+    { title:'Lab 1 – Linux Commands', due:'Submitted', score:'19/20' },
+    { title:'Lab 2 – Process Management', due:'Due: 30-Apr', score:'—' },
+    { title:'Lab 3 – Shell Scripting', due:'Due: 10-May', score:'—' },
+  ],
+  '24CSE0101': [
+    { title:'Assignment 1 – Hello World', due:'Submitted', score:'10/10' },
+    { title:'Assignment 2 – Control Flow', due:'Submitted', score:'9/10' },
+  ],
+  '24MAT0101': [
+    { title:'Problem Set 1', due:'Submitted', score:'38/40' },
+    { title:'Mid-term Paper', due:'Submitted', score:'72/80' },
+  ],
+};
+
+const tabsEl = document.getElementById('semTabs');
+const contentEl = document.getElementById('semContent');
+
+for (let i = 1; i <= 8; i++) {
+  const btn = document.createElement('button');
+  btn.className = 'stab' + (i > 2 ? ' locked' : '') + (i === 2 ? ' active' : '');
+  btn.innerHTML = i > 2 ? `<i class="fa-solid fa-lock" style="font-size:0.7rem;"></i> Sem ${i}` : `Sem ${i}`;
+  btn.addEventListener('click', () => {
+    if (i > 2) { alert('🔒 Semester not started yet. Keep progressing!'); return; }
+    document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadSem(i);
+  });
+  tabsEl.appendChild(btn);
+}
+
+function loadSem(n) {
+  const d = semData[n];
+  if (!d) { contentEl.innerHTML = ''; return; }
+  let html = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px;" id="subGrid">`;
+  d.subjects.forEach(s => {
+    const fillColor = s.status === 'Completed' ? 'background:linear-gradient(90deg,#2563eb,#16a34a)' : '';
+    html += `
+      <div class="subject-progress-card" onclick="loadAssign('${s.code}', this)">
+        <div class="sp-top">
+          <div>
+            <div class="sp-name">${s.name}</div>
+            <div class="sp-code">${s.code} &bull; ${s.credits} Cr</div>
+          </div>
+          <div class="sp-grade">${s.grade}</div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${s.score}%; ${fillColor}"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:8px;">
+          <span class="badge ${s.status==='Completed'?'badge-green':'badge-blue'}">${s.status}</span>
+          <span class="sp-percent">${s.score}%</span>
+        </div>
+        <p class="text-muted text-sm" style="margin-top:8px;"><i class="fa-solid fa-hand-pointer" style="margin-right:4px;"></i>Click to view assignments</p>
+      </div>`;
+  });
+  html += `</div><div id="assignBox"></div>`;
+  contentEl.innerHTML = html;
+}
+
+function loadAssign(code, el) {
+  document.querySelectorAll('.subject-progress-card').forEach(c => c.classList.remove('active-sub'));
+  el.classList.add('active-sub');
+  const items = assignData[code] || [];
+  const box = document.getElementById('assignBox');
+  if (!items.length) { box.innerHTML = `<div class="assign-panel"><p class="text-muted">No assignments recorded.</p></div>`; return; }
+  let html = `<div class="assign-panel"><div style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:16px;"><i class="fa-solid fa-file-lines" style="color:var(--accent); margin-right:8px;"></i>Assignments — ${code}</div>`;
+  items.forEach(a => {
+    const done = a.due === 'Submitted';
+    html += `<div class="assign-row">
+      <div>
+        <div class="ar-title">${a.title}</div>
+        <div class="ar-due"><i class="fa-regular fa-calendar"></i> ${a.due}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span class="badge ${done?'badge-green':'badge-yellow'}">${done?'Submitted':'Pending'}</span>
+        <div class="ar-score">${a.score}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  box.innerHTML = html;
+  box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+loadSem(2);
+</script>
+</body>
+</html>

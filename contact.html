@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Be Back Better</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  padding: 60px 0;
+}
+.info-card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+.contact-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.contact-item:last-of-type { border-bottom: none; }
+.ci-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.ci-label { font-size: 0.72rem; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+.ci-value { font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.5; }
+
+/* Map placeholder */
+.map-box {
+  background: var(--ink);
+  border-radius: var(--r);
+  height: 200px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.4);
+  flex-direction: column;
+  gap: 8px;
+}
+.map-box::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px
+  ),
+  repeating-linear-gradient(
+    90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 40px
+  );
+}
+.map-pin {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -70%);
+  color: var(--accent);
+  font-size: 2rem;
+  filter: drop-shadow(0 4px 8px rgba(230,57,70,0.4));
+  animation: bounce-pin 2s ease infinite;
+}
+@keyframes bounce-pin {
+  0%,100% { transform: translate(-50%,-70%); }
+  50% { transform: translate(-50%,-80%); }
+}
+.map-label { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.5px; }
+
+/* Form */
+.form-card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 36px;
+  box-shadow: var(--shadow-sm);
+}
+.form-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.form-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.success-msg {
+  display: none;
+  padding: 16px 20px;
+  background: rgba(22,163,74,0.1);
+  border: 1px solid rgba(22,163,74,0.3);
+  border-radius: var(--r);
+  color: #15803d;
+  font-size: 0.875rem;
+  font-weight: 600;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* FAQ */
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: white;
+}
+.faq-q {
+  padding: 16px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: var(--trans);
+}
+.faq-q:hover { background: var(--paper); }
+.faq-q.open { color: var(--accent2); }
+.faq-q.open .fa-chevron-down { transform: rotate(180deg); }
+.fa-chevron-down { transition: transform 0.3s ease; }
+.faq-a {
+  display: none;
+  padding: 0 20px 16px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.faq-a.open { display: block; }
+
+@media(max-width:900px){
+  .contact-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<main>
+<section class="hero" style="padding:70px 48px;">
+  <div class="hero-inner anim-fade-up">
+    <h1>Contact & Support</h1>
+    <p>Have a query? Reach out to the academic office or submit a request. We're here to help you succeed.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="contact-grid">
+    <!-- Left: Info -->
+    <div class="anim-fade-up delay-1">
+      <!-- Map -->
+      <div class="map-box">
+        <i class="fa-solid fa-location-dot map-pin"></i>
+        <div class="map-label">UNIVERSITY CAMPUS, BLOCK C</div>
+      </div>
+
+      <div class="info-card">
+        <div style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:4px;">Academic Office</div>
+        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:20px; font-family:'DM Mono',monospace;">CONTACT DETAILS</div>
+
+        <div class="contact-item">
+          <div class="ci-icon blue"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <div class="ci-label">Campus Location</div>
+            <div class="ci-value">Block C, Room 001<br>University Main Campus<br>Rajpura , Punjab – 140401</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="ci-icon green"><i class="fa-solid fa-phone"></i></div>
+          <div>
+            <div class="ci-label">Helpline (24/7)</div>
+            <div class="ci-value">+91 1800-200-3000<br><span style="font-size:0.8rem; color:var(--muted);">Toll-free, Mon–Sat, 8AM–8PM</span></div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="ci-icon red"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <div class="ci-label">Email Support</div>
+            <div class="ci-value">academics@university.edu<br>support@university.edu</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="ci-icon yellow"><i class="fa-solid fa-clock"></i></div>
+          <div>
+            <div class="ci-label">Office Hours</div>
+            <div class="ci-value">Mon – Fri: 9:00 AM – 5:00 PM<br>Saturday: 10:00 AM – 2:00 PM</div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="ci-icon blue"><i class="fa-solid fa-headset"></i></div>
+          <div>
+            <div class="ci-label">Student Grievance</div>
+            <div class="ci-value">grievance@university.edu<br>+91 011-2345-6789</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="anim-fade-up delay-2">
+      <div class="form-card">
+        <h3>Submit a Query</h3>
+        <p>Fill out the form below and our academic team will respond within 24–48 hours.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" class="form-input" id="cName" placeholder="" value="">
+          </div>
+          <div class="form-group">
+            <label>Student ID</label>
+            <input type="text" class="form-input" id="cId" placeholder="" value="">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Email</label>
+          <input type="email" class="form-input" id="cEmail" placeholder="xyz@chitkara.edu.in">
+        </div>
+
+        <div class="form-group">
+          <label>Query Category</label>
+          <select class="form-input" id="cCat">
+            <option value="">— Select category —</option>
+            <option>Academic Records</option>
+            <option>Attendance Issue</option>
+            <option>Grade Dispute</option>
+            <option>Course Registration</option>
+            <option>Fee / Finance</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" class="form-input" id="cSubject" placeholder="Brief subject of your query...">
+        </div>
+
+        <div class="form-group">
+          <label>Message</label>
+          <textarea class="form-input" id="cMsg" rows="4" placeholder="Describe your query in detail..."></textarea>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="submitQuery()">
+          <i class="fa-solid fa-paper-plane"></i> Send Query
+        </button>
+
+        <div class="success-msg" id="successMsg">
+          <i class="fa-solid fa-circle-check" style="font-size:1.2rem;"></i>
+          Your query has been submitted! We'll respond to your email within 24–48 hours.
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div style="margin-top:32px;">
+        <div class="section-title" style="font-size:1.1rem;">Frequently Asked Questions</div>
+        <div id="faqList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div>&copy; 2026 Be Back Better — University Progress System</div>
+  <div class="foot-links">
+    <a href="home.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="progress.html">Progress</a>
+  </div>
+</footer>
+
+<script>
+function submitQuery() {
+  const name = document.getElementById('cName').value.trim();
+  const email = document.getElementById('cEmail').value.trim();
+  const msg = document.getElementById('cMsg').value.trim();
+  if (!name || !email || !msg) { alert('Please fill in your name, email, and message.'); return; }
+  const s = document.getElementById('successMsg');
+  s.style.display = 'flex';
+  document.getElementById('cMsg').value = '';
+  document.getElementById('cSubject').value = '';
+  document.getElementById('cEmail').value = '';
+  s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+const faqs = [
+  { q:'How do I dispute a grade?', a:'Submit a Grade Dispute form using the "Grade Dispute" category above. Include your course code and the specific assessment. The academic committee will review within 5 working days.' },
+  { q:'What is the minimum attendance requirement?', a:'75% attendance is mandatory in all courses to be eligible to appear in end-semester examinations. If attendance falls below 75%, a medical certificate or prior leave application is required.' },
+  { q:'How do I get a transcript?', a:'Apply for transcripts at the Academic Office (Block C, Room 001) with a fee receipt. Digital transcripts are available via the student portal within 3 working days.' },
+  { q:'When does the next semester begin?', a:'Semester 3 is scheduled to begin on 1st July 2026. Course registration opens on 10th June 2026.' },
+  { q:'How do I change my elective subjects?', a:'Elective changes are allowed within the first 2 weeks of a new semester. Submit a request to your academic advisor with the preferred elective and a valid reason.' },
+];
+
+const faqEl = document.getElementById('faqList');
+faqs.forEach((f, i) => {
+  faqEl.innerHTML += `
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>${f.q}</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.8rem; color:var(--muted);"></i>
+      </div>
+      <div class="faq-a">${f.a}</div>
+    </div>`;
+});
+
+function toggleFaq(el) {
+  const ans = el.nextElementSibling;
+  const isOpen = ans.classList.contains('open');
+  document.querySelectorAll('.faq-a.open').forEach(a => { a.classList.remove('open'); a.previousElementSibling.classList.remove('open'); });
+  if (!isOpen) { ans.classList.add('open'); el.classList.add('open'); }
+}
+</script>
+</body>
+</html>

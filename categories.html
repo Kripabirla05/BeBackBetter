@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categories — Be Back Better</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+.sem-section { padding: 60px 0; border-top: 1px solid var(--border); }
+.sem-section:first-of-type { border-top: none; padding-top: 60px; }
+.sem-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
+}
+.sem-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--ink); color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.sem-badge.locked { background: var(--border); color: var(--muted); }
+.sem-credits {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: white;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+
+.subject-card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--trans);
+  position: relative;
+  overflow: hidden;
+}
+.subject-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+}
+.subject-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.subject-card.locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: var(--paper);
+}
+.subject-card.locked:hover { transform: none; box-shadow: var(--shadow-sm); }
+.sub-icon-row { display: flex; align-items: center; justify-content: space-between; }
+.sub-icon {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.sub-name { font-size: 0.9rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.sub-code {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.sub-meta { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; color: var(--muted); }
+.sub-meta span { display: flex; align-items: center; gap: 6px; }
+.sub-meta i { width: 14px; color: var(--accent2); }
+.sub-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent2);
+  padding: 7px 14px;
+  border-radius: 6px;
+  background: rgba(37,99,235,0.08);
+  transition: var(--trans);
+  width: fit-content;
+}
+.sub-link:hover { background: var(--accent2); color: white; }
+.sub-link.locked-link { color: var(--muted); background: var(--border); pointer-events: none; }
+
+/* Locked overlay */
+.locked-overlay {
+  padding: 40px 0;
+  text-align: center;
+  background: white;
+  border-radius: var(--r);
+  border: 2px dashed var(--border);
+  color: var(--muted);
+}
+.locked-overlay i { font-size: 2rem; margin-bottom: 10px; display: block; }
+.locked-overlay p { font-size: 0.85rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<main>
+<section class="hero" style="padding:70px 48px;">
+  <div class="hero-inner anim-fade-up">
+    <h1>Course Categories</h1>
+    <p>All subjects across all 8 semesters of your B.Tech CSE AIML programme. Click any course link to explore the curriculum.</p>
+  </div>
+</section>
+
+<div id="categories-root" style="padding-bottom:60px;"></div>
+</main>
+
+<footer>
+  <div>&copy; 2026 BE BACK BETTER — University Progress System</div>
+  <div class="foot-links">
+    <a href="home.html">Home</a>
+    <a href="progress.html">Progress</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+const semesterData = [
+  {
+    sem: 1, status: 'done', credits: 12,
+    subjects: [
+      { code:'24CSE0101', name:'Python', credits:5, coord:'Dr. Aniket Sharma', icon:'fa-code', color:'blue', cho:'https://www.youtube.com/watch?v=t2_Q2BRzeEE&list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0' },
+      { code:'24MAT0101', name:'LAC', credits:4, coord:'Dr. Krishna Dutt', icon:'fa-square-root-variable', color:'green', cho:'https://www.youtube.com/watch?v=0oaxIzXQB2E&list=PLU6SqdYcYsfIiBE81kdYJiXDdZ2JdVKGS' },
+      { code:'24DEC0101', name:'DECA', credits:3, coord:'Dr. Namrata ', icon:'fa-atom', color:'red', cho:'https://www.youtube.com/watch?v=pHNbm-4reIc&list=PLmXKhU9FNesSfX1PVt4VGm-wbIKfemUWK' },
+      { code:'24WEB0101', name:'Web development', credits:2, coord:'Dr. Neetu Pundir', icon:'fa-comments', color:'yellow', cho:'https://www.youtube.com/watch?v=HcOc7P5BMi4&list=PLfqMhTWNBTe0PY9xunOzsP5kmYIz2Hu7i' },
+    ]
+  },
+  {
+    sem: 2, status: 'active', credits: 13,
+    subjects: [
+      { code:'24CSE0107', name:'Fundamentals of C Programming', credits:5, coord:'Dr. Anuj', icon:'fa-c', color:'blue', cho:'https://www.youtube.com/watch?v=irqbmMNs2Bo' },
+      { code:'25CSE0105', name:'Frontend Engineering — I', credits:3, coord:'Dr. Yogendra', icon:'fa-laptop-code', color:'red', cho:'https://www.youtube.com/watch?v=ajdRvxDWH4w&list=PLGjplNEQ1it_oTvuLRNqXfz_v_0pq6unW' },
+      { code:'25CAI0102', name:'Foundations of AI Algorithms', credits:3, coord:'Dr. Gagandeep', icon:'fa-robot', color:'green', cho:'https://www.youtube.com/playlist?list=PL4gu8xQu0_5IgjW2Xc6cOMSZzjlb7qYmD' },
+      { code:'25CSE0104', name:'OS & Linux Fundamentals', credits:3, coord:'Dr. Sharanjit ', icon:'fa-linux', color:'yellow', cho:'https://www.youtube.com/watch?v=bkSWJJZNgf8&list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p' },
+    ]
+  },
+  {
+    sem: 3, status: 'locked', credits: 14,
+    subjects: [
+      { code:'25CSE0201', name:'Data Structures & Algorithms', credits:4, coord:'Dr. Mohan Das', icon:'fa-sitemap', color:'blue', cho:'#' },
+      { code:'25CSE0202', name:'Database Management Systems', credits:3, coord:'Dr. Kavita Rao', icon:'fa-database', color:'green', cho:'#' },
+      { code:'25MAT0201', name:'Discrete Mathematics', credits:3, coord:'Dr. Amit Tyagi', icon:'fa-infinity', color:'red', cho:'#' },
+      { code:'25CSE0203', name:'Object Oriented Programming', credits:4, coord:'Dr. Nisha Verma', icon:'fa-cubes', color:'yellow', cho:'#' },
+    ]
+  },
+  {
+    sem: 4, status: 'locked', credits: 14,
+    subjects: [
+      { code:'25CSE0301', name:'Computer Networks', credits:3, coord:'Dr. Sanjay Mehta', icon:'fa-network-wired', color:'blue', cho:'#' },
+      { code:'25CSE0302', name:'Theory of Computation', credits:3, coord:'Dr. Poonam Gupta', icon:'fa-gears', color:'green', cho:'#' },
+      { code:'25CSE0303', name:'Software Engineering', credits:4, coord:'Dr. Rahul Jain', icon:'fa-diagram-project', color:'red', cho:'#' },
+      { code:'25CSE0304', name:'Web Technologies', credits:4, coord:'Dr. Sneha Arora', icon:'fa-globe', color:'yellow', cho:'#' },
+    ]
+  },
+  {
+    sem: 5, status: 'locked', credits: 15,
+    subjects: [
+      { code:'25CSE0401', name:'Machine Learning', credits:4, coord:'Dr. Tanvi Sood', icon:'fa-brain', color:'blue', cho:'#' },
+      { code:'25CSE0402', name:'Cloud Computing', credits:3, coord:'Dr. Vikas Sharma', icon:'fa-cloud', color:'green', cho:'#' },
+      { code:'25CSE0403', name:'Compiler Design', credits:4, coord:'Dr. Lokesh Pandey', icon:'fa-file-code', color:'red', cho:'#' },
+      { code:'25CSE0404', name:'Information Security', credits:4, coord:'Dr. Deepa Nair', icon:'fa-shield-halved', color:'yellow', cho:'#' },
+    ]
+  },
+  {
+    sem: 6, status: 'locked', credits: 15,
+    subjects: [
+      { code:'25CSE0501', name:'Deep Learning', credits:4, coord:'Dr. Tanvi Sood', icon:'fa-microchip', color:'blue', cho:'#' },
+      { code:'25CSE0502', name:'Mobile App Development', credits:3, coord:'Dr. Swati Malik', icon:'fa-mobile-screen', color:'green', cho:'#' },
+      { code:'25CSE0503', name:'Big Data Analytics', credits:4, coord:'Dr. Priya Nair', icon:'fa-chart-bar', color:'red', cho:'#' },
+      { code:'25CSE0504', name:'DevOps & CI/CD', credits:4, coord:'Dr. Vikas Sharma', icon:'fa-code-branch', color:'yellow', cho:'#' },
+    ]
+  },
+  {
+    sem: 7, status: 'locked', credits: 12,
+    subjects: [
+      { code:'25CSE0601', name:'Research Methodology', credits:3, coord:'Dr. Amit Tyagi', icon:'fa-magnifying-glass-chart', color:'blue', cho:'#' },
+      { code:'25CSE0602', name:'Blockchain Technology', credits:3, coord:'Dr. Rahul Jain', icon:'fa-link', color:'green', cho:'#' },
+      { code:'25CSE0603', name:'Major Project Phase I', credits:6, coord:'Dr. Mohan Das', icon:'fa-flask', color:'red', cho:'#' },
+    ]
+  },
+  {
+    sem: 8, status: 'locked', credits: 12,
+    subjects: [
+      { code:'25CSE0701', name:'Industry Internship', credits:6, coord:'Dr. Meena Kapoor', icon:'fa-briefcase', color:'blue', cho:'#' },
+      { code:'25CSE0702', name:'Major Project Phase II', credits:6, coord:'Dr. Mohan Das', icon:'fa-rocket', color:'green', cho:'#' },
+    ]
+  },
+];
+
+const colorMap = {
+  blue: { bg:'rgba(37,99,235,0.1)', color:'#2563eb' },
+  green: { bg:'rgba(22,163,74,0.1)', color:'#16a34a' },
+  red: { bg:'rgba(230,57,70,0.1)', color:'#e63946' },
+  yellow: { bg:'rgba(234,179,8,0.12)', color:'#a16207' },
+};
+
+function semLabel(s) {
+  const sfx = ['st','nd','rd','th','th','th','th','th'];
+  return `${s}${sfx[s-1]} Semester`;
+}
+
+function renderSubjectCard(sub, locked) {
+  const c = colorMap[sub.color];
+  return `
+    <div class="subject-card${locked?' locked':''}">
+      <div class="sub-icon-row">
+        <div class="sub-icon" style="background:${c.bg}; color:${c.color};">
+          <i class="fa-solid ${sub.icon}"></i>
+        </div>
+        <span class="badge ${locked?'badge-gray':'badge-blue'}" style="font-size:0.68rem;">
+          ${sub.credits} Cr
+        </span>
+      </div>
+      <div>
+        <div class="sub-name">${sub.name}</div>
+        <div class="sub-code">${sub.code}</div>
+      </div>
+      <div class="sub-meta">
+        <span><i class="fa-solid fa-user-tie"></i> ${sub.coord}</span>
+        <span><i class="fa-solid fa-book"></i> ${sub.credits} Credit Hours</span>
+      </div>
+      ${locked
+        ? `<a class="sub-link locked-link"><i class="fa-solid fa-lock"></i> Locked</a>`
+        : `<a href="${sub.cho}" target="_self" class="sub-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Curriculum</a>`
+      }
+    </div>
+  `;
+}
+
+const root = document.getElementById('categories-root');
+semesterData.forEach(sem => {
+  const locked = sem.status === 'locked';
+  const statusBadge = sem.status === 'done'
+    ? '<span class="badge badge-green">Completed</span>'
+    : sem.status === 'active'
+    ? '<span class="badge badge-blue">In Progress</span>'
+    : '<span class="badge badge-gray"><i class="fa-solid fa-lock" style="font-size:0.65rem;"></i> Locked</span>';
+
+  root.innerHTML += `
+    <section class="sem-section">
+      <div class="container">
+        <div class="sem-header">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <span class="sem-badge${locked?' locked':''}">
+              ${locked ? '<i class="fa-solid fa-lock" style="font-size:0.7rem;"></i>' : '<i class="fa-solid fa-graduation-cap" style="font-size:0.7rem;"></i>'}
+              Semester ${sem.sem}
+            </span>
+            ${statusBadge}
+          </div>
+          <span class="sem-credits"><i class="fa-solid fa-star" style="color:#f59e0b; margin-right:5px;"></i>${sem.credits} Total Credits</span>
+        </div>
+        ${locked
+          ? `<div class="locked-overlay">
+               <i class="fa-solid fa-lock"></i>
+               <p>This semester is locked.<br>Complete previous semesters to unlock.</p>
+             </div>`
+          : `<div class="grid-auto">${sem.subjects.map(s => renderSubjectCard(s, false)).join('')}</div>`
+        }
+      </div>
+    </section>
+  `;
+});
+</script>
+</body>
+</html>

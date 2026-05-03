@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance — Be Back Better</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+.att-card {
+  background: white;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+  transition: var(--trans);
+  position: relative;
+  overflow: hidden;
+}
+.att-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.att-card.ok::before { background: var(--accent3); }
+.att-card.warn::before { background: #f59e0b; }
+.att-card.danger::before { background: var(--accent); }
+.att-subject { font-size: 0.95rem; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.att-code { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 16px; }
+.att-nums { display: flex; gap: 24px; margin-bottom: 12px; }
+.att-num-item .n { font-size: 1.3rem; font-weight: 800; color: var(--ink); }
+.att-num-item .l { font-size: 0.7rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+.att-pct { font-size: 1.4rem; font-weight: 800; }
+.att-pct.ok { color: var(--accent3); }
+.att-pct.warn { color: #f59e0b; }
+.att-pct.danger { color: var(--accent); }
+.att-meta { font-size: 0.78rem; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+.att-meta i { color: var(--accent2); }
+
+/* Calendar-style grid */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+  cursor: default;
+}
+.cal-day.header { background: none; color: var(--muted); font-size: 0.6rem; text-transform: uppercase; }
+.cal-day.present { background: rgba(22,163,74,0.15); color: #15803d; }
+.cal-day.absent { background: rgba(230,57,70,0.12); color: #dc2626; }
+.cal-day.empty { background: none; }
+.cal-day.future { background: var(--paper); color: var(--border); }
+.cal-day.holiday { background: rgba(37,99,235,0.1); color: var(--accent2); }
+
+/* Status strip */
+.status-strip {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.status-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 4px; }
+.status-dot.p { background: rgba(22,163,74,0.5); }
+.status-dot.a { background: rgba(230,57,70,0.4); }
+.status-dot.h { background: rgba(37,99,235,0.3); }
+.status-dot.f { background: var(--paper); border: 1px solid var(--border); }
+
+/* Warning banner */
+.warn-banner {
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.875rem;
+  color: #92400e;
+  margin-bottom: 24px;
+}
+.warn-banner i { color: #f59e0b; font-size: 1.1rem; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<main>
+<section class="hero" style="padding:70px 48px;">
+  <div class="hero-inner anim-fade-up">
+    <h1>Attendance Tracker</h1>
+    <p>Monitor your lecture attendance for each subject. Updated till <strong>28 April 2026</strong>.</p>
+  </div>
+</section>
+
+<!-- Overall stats -->
+<section style="padding:50px 0 0;">
+  <div class="container">
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;" class="anim-fade-up delay-1">
+      <div class="stat-card">
+        <div class="icon-circle green"><i class="fa-solid fa-calendar-check"></i></div>
+        <div><div class="stat-val">87%</div><div class="stat-lbl">Overall Attendance</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="icon-circle blue"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <div><div class="stat-val">186</div><div class="stat-lbl">Total Lectures</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="icon-circle green"><i class="fa-solid fa-circle-check"></i></div>
+        <div><div class="stat-val">162</div><div class="stat-lbl">Attended</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="icon-circle red"><i class="fa-solid fa-xmark"></i></div>
+        <div><div class="stat-val">24</div><div class="stat-lbl">Absent</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Warning -->
+<section style="padding:30px 0 0;">
+  <div class="container">
+    <div class="warn-banner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <div>
+        <strong>Attention:</strong> Frontend Engineering–I attendance is at <strong>76%</strong>, below the 75% minimum threshold. Please attend the next 3 classes to stay on track.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subject Attendance Cards -->
+<section style="padding:20px 0 60px;">
+  <div class="container">
+    <div class="section-title">Subject-wise Attendance</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px;" id="attCards"></div>
+  </div>
+</section>
+
+<!-- Chart + Calendar -->
+<section style="padding:60px 0; background:white;">
+  <div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+      <div class="section-title" style="margin-bottom:0;">Detailed Subject Analytics</div>
+      <select id="subjectSelect" class="form-input" style="width:auto; min-width:280px; font-weight:600; cursor:pointer;" onchange="renderSubjectDetails()">
+        <option value="24CSE0107">Fundamentals of C Programming</option>
+        <option value="25CSE0105">Frontend Engineering — I</option>
+        <option value="25CAI0102">Foundations of AI Algorithms</option>
+        <option value="25CSE0104">OS & Linux Fundamentals</option>
+      </select>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div style="background:var(--paper); border-radius:var(--r); padding:28px; border:1px solid var(--border);">
+        <div style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:20px;">
+          <i class="fa-solid fa-chart-pie" style="color:var(--accent); margin-right:8px;"></i>Attendance Distribution
+        </div>
+        <div style="height:230px;"><canvas id="attPieChart"></canvas></div>
+      </div>
+      <div style="background:var(--paper); border-radius:var(--r); padding:28px; border:1px solid var(--border);">
+        <div style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:4px;">
+          <i class="fa-solid fa-calendar-days" style="color:var(--accent2); margin-right:8px;"></i>April 2026 — <span id="calSubjectName">C Programming</span>
+        </div>
+        <div style="font-size:0.75rem; color:var(--muted); margin-bottom:16px;">Mon–Fri, 4 lectures/week</div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="status-strip">
+          <span><span class="status-dot p"></span>Present</span>
+          <span><span class="status-dot a"></span>Absent</span>
+          <span><span class="status-dot h"></span>Holiday</span>
+          <span><span class="status-dot f"></span>Upcoming</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div>&copy; 2026 Be Back Better — University Progress System</div>
+  <div class="foot-links">
+    <a href="home.html">Home</a>
+    <a href="progress.html">Progress</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+const subjects = [
+  { name:'Fundamentals of C Programming', code:'24CSE0107', delivered:52, attended:47, coord:'Dr. Rajan Kumar', updated:'28 Apr 2026' },
+  { name:'Frontend Engineering — I', code:'25CSE0105', delivered:42, attended:32, coord:'Dr. Swati Malik', updated:'28 Apr 2026' },
+  { name:'Foundations of AI Algorithms', code:'25CAI0102', delivered:48, attended:45, coord:'Dr. Tanvi Sood', updated:'28 Apr 2026' },
+  { name:'OS & Linux Fundamentals', code:'25CSE0104', delivered:44, attended:38, coord:'Dr. Harshvardhan', updated:'28 Apr 2026' },
+];
+
+const cardsEl = document.getElementById('attCards');
+subjects.forEach(s => {
+  const pct = Math.round((s.attended / s.delivered) * 100);
+  const cls = pct >= 85 ? 'ok' : pct >= 75 ? 'warn' : 'danger';
+  const needed = Math.max(0, Math.ceil((0.75 * s.delivered - s.attended) / 0.25));
+  cardsEl.innerHTML += `
+    <div class="att-card ${cls} anim-fade-up">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="att-subject">${s.name}</div>
+          <div class="att-code">${s.code}</div>
+        </div>
+        <div class="att-pct ${cls}">${pct}%</div>
+      </div>
+      <div class="att-nums">
+        <div class="att-num-item"><div class="n">${s.delivered}</div><div class="l">DELIVERED</div></div>
+        <div class="att-num-item"><div class="n" style="color:var(--accent3);">${s.attended}</div><div class="l">ATTENDED</div></div>
+        <div class="att-num-item"><div class="n" style="color:var(--accent);">${s.delivered - s.attended}</div><div class="l">ABSENT</div></div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%; background:${pct>=85?'linear-gradient(90deg,#16a34a,#2563eb)':pct>=75?'linear-gradient(90deg,#f59e0b,#f97316)':'linear-gradient(90deg,var(--accent),#f97316)'};"></div>
+      </div>
+      <div class="att-meta"><i class="fa-solid fa-user-tie"></i> ${s.coord}</div>
+      <div class="att-meta"><i class="fa-solid fa-clock"></i> Updated: ${s.updated}</div>
+      ${needed > 0 ? `<div class="att-meta" style="color:#b45309;"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Need ${needed} more classes to reach 75%</div>` : `<div class="att-meta" style="color:#15803d;"><i class="fa-solid fa-circle-check" style="color:var(--accent3);"></i> Above minimum threshold</div>`}
+    </div>
+  `;
+});
+
+// Dynamic Subject Data
+const subjectDetails = {
+  '24CSE0107': {
+    name: 'Fundamentals of C Programming',
+    present: 47, absent: 5,
+    calendar: [
+      'P','P','P','P','P','P','P',  // 1-7
+      'P','P','P','A','P','P','P',  // 8-14
+      'P','P','P','P','P','P','P',  // 15-21
+      'A','P','P','P','A','P','P',  // 22-28
+      'P','F','','','','',''      // 29-30
+    ]
+  },
+  '25CSE0105': {
+    name: 'Frontend Engineering — I',
+    present: 32, absent: 10,
+    calendar: [
+      'P','A','P','A','P','P','A',
+      'P','P','A','A','P','P','P',
+      'P','A','P','P','P','P','P',
+      'P','A','P','A','P','P','P',
+      'F','F','','','','',''
+    ]
+  },
+  '25CAI0102': {
+    name: 'Foundations of AI Algorithms',
+    present: 45, absent: 3,
+    calendar: [
+      'P','P','P','P','P','P','P',
+      'P','P','P','P','A','P','P',
+      'P','P','P','P','P','P','P',
+      'P','A','P','P','A','P','P',
+      'P','F','','','','',''
+    ]
+  },
+  '25CSE0104': {
+    name: 'OS & Linux Fundamentals',
+    present: 38, absent: 6,
+    calendar: [
+      'P','P','A','P','P','P','P',
+      'P','A','P','P','P','P','A',
+      'P','P','A','P','P','P','P',
+      'P','A','P','P','A','P','P',
+      'F','F','','','','',''
+    ]
+  }
+};
+
+let pieChartInstance = null;
+
+function renderSubjectDetails() {
+  const code = document.getElementById('subjectSelect').value;
+  const data = subjectDetails[code];
+  
+  // Update Header
+  document.getElementById('calSubjectName').textContent = data.name;
+  
+  // Update Pie Chart
+  if (pieChartInstance) pieChartInstance.destroy();
+  pieChartInstance = new Chart(document.getElementById('attPieChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: [`Present (${data.present})`, `Absent (${data.absent})`],
+      datasets: [{ data:[data.present, data.absent], backgroundColor:['#34d399','#fb7185'], borderWidth:0, hoverOffset:6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position:'bottom', labels:{ font:{family:'Sora',size:12}, padding:14 } } }
+    }
+  });
+  
+  // Update Calendar
+  const calEl = document.getElementById('calGrid');
+  calEl.innerHTML = '';
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  days.forEach(d => { calEl.innerHTML += `<div class="cal-day header">${d}</div>`; });
+  
+  // April 1 2026 is Wednesday (index 2)
+  for (let i = 0; i < 2; i++) calEl.innerHTML += `<div class="cal-day empty"></div>`;
+  
+  for (let i = 0; i < 30; i++) {
+    // Determine if it's weekend (Sat=5, Sun=6)
+    // i=0 is Apr 1 (Wed). Offset = 2. Total = i+2.
+    let isWeekend = (i + 2) % 7 >= 5;
+    
+    let a = data.calendar[i] || '';
+    if (isWeekend) a = 'H';
+    
+    let cls = '';
+    if (isWeekend) cls = 'holiday';
+    else if (a === 'P') cls = 'present';
+    else if (a === 'A') cls = 'absent';
+    else if (a === 'H') cls = 'holiday';
+    else if (i < 28) cls = 'empty';
+    else cls = 'future';
+    
+    calEl.innerHTML += `<div class="cal-day ${cls}">${i + 1}</div>`;
+  }
+}
+
+// Initial render
+document.addEventListener('DOMContentLoaded', () => {
+  renderSubjectDetails();
+});
+
+</script>
+</body>
+</html>

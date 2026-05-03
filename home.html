@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home — BE BACK BETTER</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* QUOTE TICKER */
+.quote-banner {
+  background: var(--accent2);
+  color: white;
+  padding: 12px 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow: hidden;
+  position: relative;
+}
+.quote-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: rgba(255,255,255,0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.quote-scroll-wrap { overflow: hidden; flex: 1; }
+.quote-scroll {
+  font-size: 0.9rem;
+  font-style: italic;
+  font-weight: 500;
+  white-space: nowrap;
+  animation: scroll-quote 30s linear infinite;
+}
+.quote-scroll-wrap:hover .quote-scroll { animation-play-state: paused; }
+@keyframes scroll-quote {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+.quote-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  flex-shrink: 0;
+}
+
+/* PROFILE CARD */
+.profile-section {
+  padding: 60px 0 0;
+  background: var(--paper);
+}
+.profile-card {
+  background: white;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+.profile-left {
+  background: var(--ink);
+  padding: 40px 32px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+.avatar {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  border: 4px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+.profile-name { font-size: 1.2rem; font-weight: 700; }
+.profile-id { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+.profile-dept {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.8);
+  margin-top: 4px;
+}
+.profile-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.78rem;
+  color: #4ade80;
+}
+.profile-status::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.profile-right {
+  padding: 36px 40px;
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.info-item .lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.info-item .val {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cgpa-display {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  background: rgba(37,99,235,0.06);
+  border-radius: var(--r);
+  border: 1px solid rgba(37,99,235,0.15);
+}
+.cgpa-val { font-size: 2.2rem; font-weight: 800; color: var(--accent2); line-height: 1; }
+.cgpa-info .cgpa-label { font-size: 0.78rem; color: var(--muted); }
+.cgpa-info .cgpa-rank { font-size: 0.85rem; font-weight: 600; color: var(--ink); margin-top: 2px; }
+
+/* QUICK STATS */
+.quick-stats { padding: 40px 0; }
+.quick-stats .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+
+/* OVERVIEW GRID */
+.overview-section { padding: 20px 0 60px; }
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.course-list-card { background: white; border-radius: var(--r); border: 1px solid var(--border); padding: 28px; box-shadow: var(--shadow-sm); }
+.course-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.course-row:last-child { border-bottom: none; }
+.course-name { font-size: 0.875rem; font-weight: 600; color: var(--ink); }
+.course-code { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.course-grade {
+  font-size: 1rem; font-weight: 800;
+  color: var(--accent2);
+  width: 40px; text-align: center;
+}
+
+/* SCHEDULE CARD */
+.schedule-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.schedule-item:last-child { border-bottom: none; }
+.sched-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: var(--paper);
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sched-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+.sched-name { font-size: 0.875rem; font-weight: 600; color: var(--ink); }
+.sched-room { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+.day-btn {
+  background: transparent;
+  border: none;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.day-btn:hover { color: var(--ink); }
+.day-btn.active { background: white; color: var(--accent2); box-shadow: var(--shadow-sm); }
+
+@media(max-width:900px){
+  .profile-card { grid-template-columns: 1fr; }
+  .profile-left { padding: 32px 24px; }
+  .quick-stats .grid-4 { grid-template-columns: repeat(2,1fr); }
+  .overview-grid { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+<main>
+<!-- Hourly Quote Banner -->
+<div class="quote-banner">
+  <div class="quote-label"><i class="fa-solid fa-bolt" style="margin-right:4px;"></i>Daily Fuel</div>
+  <div class="quote-scroll-wrap">
+    <div class="quote-scroll" id="quoteScroll">"Loading your inspiration..."</div>
+  </div>
+  <div class="quote-time" id="quoteTime"></div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner anim-fade-up">
+    <h1>Good <span id="timeGreeting"></span>, <span id="greetingName">Harnoor</span>! 👋</h1>
+    <p>Here's your academic snapshot. You're on track — keep the momentum going.</p>
+  </div>
+</section>
+
+<!-- Profile -->
+<section class="profile-section">
+  <div class="container">
+    <div class="profile-card anim-fade-up delay-1">
+      <div class="profile-left">
+        <div class="avatar" id="profileAvatar">HK</div>
+        <div>
+          <div class="profile-name" id="profileName">Harnoor Kaur</div>
+          <div class="profile-id" id="profileId">2510992941</div>
+        </div>
+        <div class="profile-dept">BE-Computer Science AIML</div>
+        <div class="profile-status">Active Student</div>
+      </div>
+      <div class="profile-right">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div class="section-title" style="margin-bottom:4px; font-size:1.3rem;">Student Profile</div>
+            <div class="text-muted">Semester 2 — Academic Year 2025-26</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <button onclick="toggleEditProfile()" style="background:white; border:1px solid var(--accent2); color:var(--accent2); padding:6px 14px; border-radius:6px; font-size:0.8rem; font-weight:600; font-family:'Sora',sans-serif; cursor:pointer; transition:var(--trans); display:flex; align-items:center; gap:6px;" onmouseover="this.style.background='var(--accent2)'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='var(--accent2)';"><i class="fa-solid fa-pen"></i> Edit Profile</button>
+            <span class="badge badge-blue" style="font-size:0.8rem; padding:6px 14px;">Semester 2 / 8</span>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="lbl">Full Name</div>
+            <div class="val" id="infoFullName">Harnoor Kaur</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Date of Birth</div>
+            <div class="val" id="infoDob">12 June 2006</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">University Roll No.</div>
+            <div class="val" id="infoRollNo">2510992941</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Admission Year</div>
+            <div class="val" id="infoAdYear">2025</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Programme</div>
+            <div class="val" id="infoProgram">BE CSE AIML</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Phone</div>
+            <div class="val" id="infoPhone">+91 7988756443</div>
+          </div>
+        </div>
+        <div class="cgpa-display">
+          <div class="cgpa-val" id="cgpaValue">9.2</div>
+          <div class="cgpa-info">
+            <div class="cgpa-label">Current CGPA (out of 10)</div>
+            <div class="progress-track" style="width:200px; margin-top:8px;">
+              <div class="progress-fill" id="cgpaBar" style="width:92%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Stats -->
+<section class="quick-stats">
+  <div class="container">
+    <div class="quick-stats grid-4 anim-fade-up delay-2">
+      <div class="stat-card">
+        <div class="icon-circle blue"><i class="fa-solid fa-book-open"></i></div>
+        <div>
+          <div class="stat-val" id="statCredits">13</div>
+          <div class="stat-lbl">Credits Earned</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="icon-circle green"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+          <div class="stat-val" id="statAttendance">87%</div>
+          <div class="stat-lbl">Attendance</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="icon-circle red"><i class="fa-solid fa-file-lines"></i></div>
+        <div>
+          <div class="stat-val" id="statAssignments">11 / 14</div>
+          <div class="stat-lbl">Assignments Done</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="icon-circle yellow"><i class="fa-solid fa-star"></i></div>
+        <div>
+          <div class="stat-val" id="statGrade">A+</div>
+          <div class="stat-lbl">Top Grade This Sem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Overview -->
+<section class="overview-section">
+  <div class="container">
+    <div class="overview-grid">
+      <!-- Current Courses -->
+      <div class="course-list-card anim-fade-up delay-3">
+        <div class="section-title" style="font-size:1.1rem;">Current Semester Courses</div>
+        <div class="course-row">
+          <div>
+            <div class="course-name">Fundamentals of C Programming</div>
+            <div class="course-code">24CSE0107 &bull; 5 Credits</div>
+          </div>
+          <div class="course-grade">A</div>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-name">Frontend Engineering — I</div>
+            <div class="course-code">25CSE0105 &bull; 3 Credits</div>
+          </div>
+          <div class="course-grade">A</div>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-name">Foundations of AI Algorithms</div>
+            <div class="course-code">25CAI0102 &bull; 3 Credits</div>
+          </div>
+          <div class="course-grade">A+</div>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-name">OS & Linux Fundamentals</div>
+            <div class="course-code">25CSE0104 &bull; 3 Credits</div>
+          </div>
+          <div class="course-grade">A+</div>
+        </div>
+      </div>
+
+      <!-- Weekly Schedule -->
+      <div class="course-list-card anim-fade-up delay-4">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+          <div class="section-title" style="margin-bottom:0; font-size:1.1rem;">Class Schedule</div>
+          <div style="display:flex; gap:4px; background:var(--paper); padding:4px; border-radius:8px;">
+            <button class="day-btn active" onclick="setScheduleDay('Mon', this)">Mon</button>
+            <button class="day-btn" onclick="setScheduleDay('Tue', this)">Tue</button>
+            <button class="day-btn" onclick="setScheduleDay('Wed', this)">Wed</button>
+            <button class="day-btn" onclick="setScheduleDay('Thu', this)">Thu</button>
+            <button class="day-btn" onclick="setScheduleDay('Fri', this)">Fri</button>
+          </div>
+        </div>
+        <div id="scheduleContainer"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" style="display:none; position:fixed; inset:0; background:rgba(10,15,30,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div style="background:white; padding:32px; border-radius:var(--r); width:90%; max-width:420px; box-shadow:var(--shadow-lg); animation:fadeUp 0.3s ease;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <h3 style="font-size:1.2rem; font-weight:700; color:var(--ink);">Edit Profile</h3>
+      <button onclick="closeEditModal()" style="background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div style="margin-bottom:16px;">
+      <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:6px; font-family:'DM Mono',monospace; text-transform:uppercase;">Full Name</label>
+      <input type="text" id="editName" style="width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-family:'Sora',sans-serif; font-size:0.9rem; outline:none;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:6px; font-family:'DM Mono',monospace; text-transform:uppercase;">Date of Birth</label>
+      <input type="date" id="editDob" style="width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-family:'Sora',sans-serif; font-size:0.9rem; outline:none;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:6px; font-family:'DM Mono',monospace; text-transform:uppercase;">Phone Number</label>
+      <input type="text" id="editPhone" style="width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-family:'Sora',sans-serif; font-size:0.9rem; outline:none;">
+    </div>
+    <div style="margin-bottom:24px;">
+      <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--muted); margin-bottom:6px; font-family:'DM Mono',monospace; text-transform:uppercase;">Programme</label>
+      <input type="text" id="editProgram" style="width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:8px; font-family:'Sora',sans-serif; font-size:0.9rem; outline:none;">
+    </div>
+    
+    <div style="display:flex; gap:12px; justify-content:flex-end;">
+      <button onclick="closeEditModal()" style="padding:10px 18px; border-radius:8px; background:var(--paper); color:var(--ink); border:1px solid var(--border); font-weight:600; font-family:'Sora',sans-serif; cursor:pointer;">Cancel</button>
+      <button onclick="saveProfile()" style="padding:10px 18px; border-radius:8px; background:var(--accent2); color:white; border:none; font-weight:600; font-family:'Sora',sans-serif; cursor:pointer;">Save Changes</button>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div>&copy; 2026 Be Back Better — University Progress System</div>
+  <div class="foot-links">
+    <a href="home.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const loggedInUser = sessionStorage.getItem('loggedInUser') || '24CSE001';
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const user = users[loggedInUser];
+  if (user) {
+    const firstName = user.name.split(' ')[0];
+    document.getElementById('greetingName').textContent = firstName;
+    document.getElementById('profileName').textContent = user.name;
+    document.getElementById('profileId').textContent = user.id;
+    document.getElementById('infoFullName').textContent = user.name;
+    document.getElementById('infoRollNo').textContent = user.id;
+    document.getElementById('profileAvatar').textContent = firstName.substring(0, 2).toUpperCase();
+    
+    if (document.getElementById('infoDob')) document.getElementById('infoDob').textContent = user.dob || '12 June 2006';
+    if (document.getElementById('infoAdYear')) document.getElementById('infoAdYear').textContent = user.adYear || '2025';
+    if (document.getElementById('infoProgram')) document.getElementById('infoProgram').textContent = user.program || 'BE CSE AIML';
+    if (document.getElementById('infoPhone')) document.getElementById('infoPhone').textContent = user.phone || '+91 7988756443';
+    
+    document.getElementById('cgpaValue').textContent = user.cgpa;
+    document.getElementById('cgpaBar').style.width = (user.cgpa * 10) + '%';
+    
+    document.getElementById('statCredits').textContent = user.creditsEarned;
+    document.getElementById('statAttendance').textContent = user.attendance;
+    document.getElementById('statAssignments').textContent = user.assignments;
+    document.getElementById('statGrade').textContent = user.topGrade;
+  }
+  
+  // Render initial schedule
+  setScheduleDay('Mon', document.querySelector('.day-btn.active'));
+});
+
+// Weekly Schedule Data and Logic
+const weeklySchedule = {
+  'Mon': [
+    { time: '4:10 PM - 5:50 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther <br> • Dr. Sharanjit', color: 'var(--accent2)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent)' },
+    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Discrete Mathematics', room: 'Room No. 503, Martin Luther <br> • Mrs. Swati', color: '#a855f7' }
+  ],
+  'Tue': [
+    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther <br> • Dr. Gagandeep', color: 'var(--accent2)' },
+    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther <br> • Dr. Sharanjit', color: 'var(--accent2)' }
+  ],
+  'Wed': [
+    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther <br> • Dr. Gagandeep', color: 'var(--accent)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther <br> • Dr. Yogendra', color: '#a855f7' }
+  ],
+  'Thu': [
+    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther <br> • Dr. Sharanjit', color: 'var(--accent2)' },
+    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther <br> • Dr. Yogendra', color: 'var(--accent)' }
+  ],
+  'Fri': [
+    { time: '4:10 PM - 5:50 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther <br> • Dr. Yogendra', color: '#a855f7' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '7:30 PM - 8:40 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '8:40 PM - 9:20 PM', subject: 'Discrete Mathematics', room: 'Room No. 503, Martin Luther <br> • Mrs. Swati', color: '#a855f7' }
+  ]
+};
+
+function setScheduleDay(day, btn) {
+  if (btn) {
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const container = document.getElementById('scheduleContainer');
+  container.innerHTML = '';
+  
+  const schedule = weeklySchedule[day] || [];
+  if (schedule.length === 0) {
+    container.innerHTML = '<div style="padding:20px 0; text-align:center; color:var(--muted); font-size:0.9rem;">No classes scheduled.</div>';
+    return;
+  }
+  
+  schedule.forEach(item => {
+    container.innerHTML += `
+      <div class="schedule-item">
+        <div class="sched-time">${item.time}</div>
+        <div class="sched-dot" style="background:${item.color};"></div>
+        <div>
+          <div class="sched-name">${item.subject}</div>
+          ${item.room ? '<div class="sched-room">' + item.room + '</div>' : ''}
+        </div>
+      </div>
+    `;
+  });
+}
+
+// Hourly quotes
+const quotes = [
+  "The secret of getting ahead is getting started. — Mark Twain",
+  "It does not matter how slowly you go as long as you do not stop. — Confucius",
+  "Education is the most powerful weapon which you can use to change the world. — Nelson Mandela",
+  "The beautiful thing about learning is that no one can take it away from you. — B.B. King",
+  "An investment in knowledge pays the best interest. — Benjamin Franklin",
+  "Push yourself, because no one else is going to do it for you.",
+  "Great things never come from comfort zones.",
+  "Dream it. Believe it. Build it.",
+  "Success is not final, failure is not fatal: it is the courage to continue that counts. — Winston Churchill",
+  "Hard work beats talent when talent doesn't work hard.",
+  "Be so good they can't ignore you. — Steve Martin",
+  "The expert in anything was once a beginner.",
+  "Strive for progress, not perfection.",
+  "Don't watch the clock; do what it does. Keep going. — Sam Levenson",
+  "The future belongs to those who believe in the beauty of their dreams. — Eleanor Roosevelt",
+  "You don't have to be great to start, but you have to start to be great.",
+  "Believe you can and you're halfway there. — Theodore Roosevelt",
+  "Success usually comes to those who are too busy to be looking for it. — Henry David Thoreau",
+  "Opportunities don't happen, you create them. — Chris Grosser",
+  "Don't stop when you're tired. Stop when you're done.",
+  "Wake up with determination. Go to bed with satisfaction.",
+  "Do something today that your future self will thank you for.",
+  "Little things make big days.",
+  "It's going to be hard, but hard is not impossible.",
+];
+
+function updateQuote() {
+  const hour = new Date().getHours();
+  const idx = hour % quotes.length;
+  const el = document.getElementById('quoteScroll');
+  el.textContent = `"${quotes[idx]}"`;
+}
+
+function updateTime() {
+  const now = new Date();
+  const h = now.getHours();
+  document.getElementById('quoteTime').textContent =
+    now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+  const greet = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+  document.getElementById('timeGreeting').textContent = greet;
+}
+
+updateQuote();
+updateTime();
+// Check if hour changed every minute
+setInterval(() => {
+  const m = new Date().getMinutes();
+  if (m === 0) updateQuote();
+  updateTime();
+}, 60000);
+
+// Edit Profile Functions
+function toggleEditProfile() {
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const loggedInUser = sessionStorage.getItem('loggedInUser') || '24CSE001';
+  const user = users[loggedInUser];
+  
+  if (user) {
+    document.getElementById('editName').value = user.name || '';
+    document.getElementById('editDob').value = user.dob || '';
+    document.getElementById('editPhone').value = user.phone || '';
+    document.getElementById('editProgram').value = user.program || '';
+  }
+  
+  document.getElementById('editProfileModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('editProfileModal').style.display = 'none';
+}
+
+function saveProfile() {
+  const loggedInUser = sessionStorage.getItem('loggedInUser') || '24CSE001';
+  let users = JSON.parse(localStorage.getItem('users') || '{}');
+  let user = users[loggedInUser];
+  
+  if (user) {
+    user.name = document.getElementById('editName').value.trim();
+    user.dob = document.getElementById('editDob').value;
+    user.phone = document.getElementById('editPhone').value.trim();
+    user.program = document.getElementById('editProgram').value.trim();
+    
+    users[loggedInUser] = user;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Refresh to show updated details
+    window.location.reload();
+  }
+}
+</script>
+</body>
+</html>
