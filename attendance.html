@@ -128,7 +128,25 @@
     <div class="warn-banner">
       <i class="fa-solid fa-triangle-exclamation"></i>
       <div>
-        <strong>Attention:</strong> Frontend Engineering–I attendance is at <strong>76%</strong>, below the 75% minimum threshold. Please attend the next 3 classes to stay on track.
+        <strong>Attention:</strong> Frontend Engineering–I attendance is below the 75% minimum threshold. Please attend upcoming classes to stay on track.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mark Attendance -->
+<section style="padding:30px 0 0;">
+  <div class="container">
+    <div class="att-card anim-fade-up delay-1" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; background:var(--paper); border:2px dashed var(--border);">
+      <div>
+        <div style="font-size:1.1rem; font-weight:800; color:var(--ink);">Mark Today's Attendance</div>
+        <div style="font-size:0.85rem; color:var(--muted); margin-top:4px;" id="markDateDisplay">...</div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <select id="markSubjectSelect" class="form-input" style="min-width:200px; font-weight:600; cursor:pointer;">
+        </select>
+        <button class="btn btn-primary" onclick="markTodayAttendance('P')" style="background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-check"></i> Present</button>
+        <button class="btn btn-primary" onclick="markTodayAttendance('A')" style="background:#dc2626; border-color:#dc2626;"><i class="fa-solid fa-xmark"></i> Absent</button>
       </div>
     </div>
   </div>
@@ -162,8 +180,14 @@
         <div style="height:230px;"><canvas id="attPieChart"></canvas></div>
       </div>
       <div style="background:var(--paper); border-radius:var(--r); padding:28px; border:1px solid var(--border);">
-        <div style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:4px;">
-          <i class="fa-solid fa-calendar-days" style="color:var(--accent2); margin-right:8px;"></i>April 2026 — <span id="calSubjectName">C Programming</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <div style="font-size:1rem; font-weight:700; color:var(--ink);">
+            <i class="fa-solid fa-calendar-days" style="color:var(--accent2); margin-right:8px;"></i><span id="calMonthDisplay">April 2026</span> — <span id="calSubjectName">C Programming</span>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button onclick="changeMonth(-1)" class="btn" style="padding:6px 12px; font-size:0.85rem;"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="changeMonth(1)" class="btn" style="padding:6px 12px; font-size:0.85rem;"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
         </div>
         <div style="font-size:0.75rem; color:var(--muted); margin-bottom:16px;">Mon–Fri, 4 lectures/week</div>
         <div class="cal-grid" id="calGrid"></div>
@@ -178,6 +202,26 @@
   </div>
 </section>
 
+<!-- All records table -->
+<section style="padding:60px 0; background:var(--paper);">
+  <div class="container">
+    <div class="section-title">Detailed Lecture Record</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Topic Covered</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="lectureTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+</main>
 
 <footer>
   <div>&copy; 2026 Be Back Better — University Progress System</div>
@@ -189,147 +233,250 @@
 </footer>
 
 <script>
-const subjects = [
-  { name:'Fundamentals of C Programming', code:'24CSE0107', delivered:52, attended:47, coord:'Dr. Rajan Kumar', updated:'28 Apr 2026' },
-  { name:'Frontend Engineering — I', code:'25CSE0105', delivered:42, attended:32, coord:'Dr. Swati Malik', updated:'28 Apr 2026' },
-  { name:'Foundations of AI Algorithms', code:'25CAI0102', delivered:48, attended:45, coord:'Dr. Tanvi Sood', updated:'28 Apr 2026' },
-  { name:'OS & Linux Fundamentals', code:'25CSE0104', delivered:44, attended:38, coord:'Dr. Harshvardhan', updated:'28 Apr 2026' },
+// Base subject list
+const subjectsBase = [
+  { name:'Fundamentals of C Programming', code:'24CSE0107', coord:'Dr. Rajan Kumar' },
+  { name:'Frontend Engineering — I', code:'25CSE0105', coord:'Dr. Swati Malik' },
+  { name:'Foundations of AI Algorithms', code:'25CAI0102', coord:'Dr. Tanvi Sood' },
+  { name:'OS & Linux Fundamentals', code:'25CSE0104', coord:'Dr. Harshvardhan' }
 ];
 
-const cardsEl = document.getElementById('attCards');
-subjects.forEach(s => {
-  const pct = Math.round((s.attended / s.delivered) * 100);
-  const cls = pct >= 85 ? 'ok' : pct >= 75 ? 'warn' : 'danger';
-  const needed = Math.max(0, Math.ceil((0.75 * s.delivered - s.attended) / 0.25));
-  cardsEl.innerHTML += `
-    <div class="att-card ${cls} anim-fade-up">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div>
-          <div class="att-subject">${s.name}</div>
-          <div class="att-code">${s.code}</div>
-        </div>
-        <div class="att-pct ${cls}">${pct}%</div>
-      </div>
-      <div class="att-nums">
-        <div class="att-num-item"><div class="n">${s.delivered}</div><div class="l">DELIVERED</div></div>
-        <div class="att-num-item"><div class="n" style="color:var(--accent3);">${s.attended}</div><div class="l">ATTENDED</div></div>
-        <div class="att-num-item"><div class="n" style="color:var(--accent);">${s.delivered - s.attended}</div><div class="l">ABSENT</div></div>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width:${pct}%; background:${pct>=85?'linear-gradient(90deg,#16a34a,#2563eb)':pct>=75?'linear-gradient(90deg,#f59e0b,#f97316)':'linear-gradient(90deg,var(--accent),#f97316)'};"></div>
-      </div>
-      <div class="att-meta"><i class="fa-solid fa-user-tie"></i> ${s.coord}</div>
-      <div class="att-meta"><i class="fa-solid fa-clock"></i> Updated: ${s.updated}</div>
-      ${needed > 0 ? `<div class="att-meta" style="color:#b45309;"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Need ${needed} more classes to reach 75%</div>` : `<div class="att-meta" style="color:#15803d;"><i class="fa-solid fa-circle-check" style="color:var(--accent3);"></i> Above minimum threshold</div>`}
-    </div>
-  `;
+// Helper to format date YYYY-MM-DD
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+const today = new Date();
+const todayStr = formatDate(today);
+
+// Generate dummy data from Jan 1 2026 to yesterday
+function generateMockData() {
+  let data = {};
+  subjectsBase.forEach(s => {
+    data[s.code] = { records: {} };
+    let d = new Date(today.getFullYear(), 0, 1); // Jan 1 of current year
+    while(d < today) {
+      const dayOfWeek = d.getDay();
+      if(dayOfWeek !== 0 && dayOfWeek !== 6) { // Mon-Fri
+        // Randomly assign P or A. P 85% of time.
+        data[s.code].records[formatDate(d)] = Math.random() > 0.15 ? 'P' : 'A';
+      }
+      d.setDate(d.getDate() + 1);
+    }
+  });
+  return data;
+}
+
+// Load data from localStorage or initialize
+let attendanceData = JSON.parse(localStorage.getItem('attendanceData'));
+if (!attendanceData) {
+  attendanceData = generateMockData();
+  localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+}
+
+let currentCalMonth = today.getMonth(); // 0-11
+let currentCalYear = today.getFullYear();
+let pieChartInstance = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const markSelect = document.getElementById('markSubjectSelect');
+  const viewSelect = document.getElementById('subjectSelect');
+  markSelect.innerHTML = ''; viewSelect.innerHTML = '';
+  
+  subjectsBase.forEach(s => {
+    const opt = `<option value="${s.code}">${s.name}</option>`;
+    markSelect.innerHTML += opt;
+    viewSelect.innerHTML += opt;
+  });
+
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('markDateDisplay').textContent = today.toLocaleDateString('en-US', options);
+
+  renderAll();
 });
 
-// Dynamic Subject Data
-const subjectDetails = {
-  '24CSE0107': {
-    name: 'Fundamentals of C Programming',
-    present: 47, absent: 5,
-    calendar: [
-      'P','P','P','P','P','P','P',  // 1-7
-      'P','P','P','A','P','P','P',  // 8-14
-      'P','P','P','P','P','P','P',  // 15-21
-      'A','P','P','P','A','P','P',  // 22-28
-      'P','F','','','','',''      // 29-30
-    ]
-  },
-  '25CSE0105': {
-    name: 'Frontend Engineering — I',
-    present: 32, absent: 10,
-    calendar: [
-      'P','A','P','A','P','P','A',
-      'P','P','A','A','P','P','P',
-      'P','A','P','P','P','P','P',
-      'P','A','P','A','P','P','P',
-      'F','F','','','','',''
-    ]
-  },
-  '25CAI0102': {
-    name: 'Foundations of AI Algorithms',
-    present: 45, absent: 3,
-    calendar: [
-      'P','P','P','P','P','P','P',
-      'P','P','P','P','A','P','P',
-      'P','P','P','P','P','P','P',
-      'P','A','P','P','A','P','P',
-      'P','F','','','','',''
-    ]
-  },
-  '25CSE0104': {
-    name: 'OS & Linux Fundamentals',
-    present: 38, absent: 6,
-    calendar: [
-      'P','P','A','P','P','P','P',
-      'P','A','P','P','P','P','A',
-      'P','P','A','P','P','P','P',
-      'P','A','P','P','A','P','P',
-      'F','F','','','','',''
-    ]
-  }
-};
+function markTodayAttendance(status) {
+  const code = document.getElementById('markSubjectSelect').value;
+  attendanceData[code].records[todayStr] = status;
+  localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+  
+  // Show visual feedback
+  const btn = event.currentTarget;
+  const oldHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saved!';
+  setTimeout(() => { btn.innerHTML = oldHtml; }, 1500);
 
-let pieChartInstance = null;
+  renderAll();
+}
+
+function renderAll() {
+  renderSubjectCards();
+  renderSubjectDetails();
+  renderLectureTable();
+}
+
+function calculateStats(code) {
+  const records = attendanceData[code].records;
+  let delivered = 0;
+  let attended = 0;
+  for (const date in records) {
+    if (records[date] === 'P' || records[date] === 'A') delivered++;
+    if (records[date] === 'P') attended++;
+  }
+  return { delivered, attended };
+}
+
+function renderSubjectCards() {
+  const cardsEl = document.getElementById('attCards');
+  cardsEl.innerHTML = '';
+  
+  subjectsBase.forEach(s => {
+    const stats = calculateStats(s.code);
+    const delivered = stats.delivered;
+    const attended = stats.attended;
+    const absent = delivered - attended;
+    
+    let pct = delivered > 0 ? Math.round((attended / delivered) * 100) : 0;
+    const cls = pct >= 85 ? 'ok' : pct >= 75 ? 'warn' : 'danger';
+    const needed = Math.max(0, Math.ceil((0.75 * delivered - attended) / 0.25));
+    
+    cardsEl.innerHTML += `
+      <div class="att-card ${cls} anim-fade-up">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div class="att-subject">${s.name}</div>
+            <div class="att-code">${s.code}</div>
+          </div>
+          <div class="att-pct ${cls}">${pct}%</div>
+        </div>
+        <div class="att-nums">
+          <div class="att-num-item"><div class="n">${delivered}</div><div class="l">DELIVERED</div></div>
+          <div class="att-num-item"><div class="n" style="color:var(--accent3);">${attended}</div><div class="l">ATTENDED</div></div>
+          <div class="att-num-item"><div class="n" style="color:var(--accent);">${absent}</div><div class="l">ABSENT</div></div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${pct}%; background:${pct>=85?'linear-gradient(90deg,#16a34a,#2563eb)':pct>=75?'linear-gradient(90deg,#f59e0b,#f97316)':'linear-gradient(90deg,var(--accent),#f97316)'};"></div>
+        </div>
+        <div class="att-meta"><i class="fa-solid fa-user-tie"></i> ${s.coord}</div>
+        <div class="att-meta"><i class="fa-solid fa-clock"></i> Updated: ${today.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}</div>
+        ${needed > 0 ? `<div class="att-meta" style="color:#b45309;"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Need ${needed} more classes to reach 75%</div>` : `<div class="att-meta" style="color:#15803d;"><i class="fa-solid fa-circle-check" style="color:var(--accent3);"></i> Above minimum threshold</div>`}
+      </div>
+    `;
+  });
+}
+
+function changeMonth(offset) {
+  currentCalMonth += offset;
+  if (currentCalMonth < 0) {
+    currentCalMonth = 11;
+    currentCalYear--;
+  } else if (currentCalMonth > 11) {
+    currentCalMonth = 0;
+    currentCalYear++;
+  }
+  renderSubjectDetails();
+}
 
 function renderSubjectDetails() {
   const code = document.getElementById('subjectSelect').value;
-  const data = subjectDetails[code];
+  const sName = subjectsBase.find(s => s.code === code).name;
+  const records = attendanceData[code].records;
   
-  // Update Header
-  document.getElementById('calSubjectName').textContent = data.name;
+  // Header
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  document.getElementById('calMonthDisplay').textContent = `${monthNames[currentCalMonth]} ${currentCalYear}`;
+  document.getElementById('calSubjectName').textContent = sName;
+  
+  // Calculate month specific stats
+  let mPres = 0, mAbs = 0;
+  
+  const daysInMonth = new Date(currentCalYear, currentCalMonth + 1, 0).getDate();
+  const firstDay = new Date(currentCalYear, currentCalMonth, 1).getDay(); // 0 is Sun, 1 is Mon
+  
+  // Calendar UI
+  const calEl = document.getElementById('calGrid');
+  calEl.innerHTML = '';
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  days.forEach(d => { calEl.innerHTML += `<div class="cal-day header">${d}</div>`; });
+  
+  let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
+  for (let i = 0; i < emptyCells; i++) calEl.innerHTML += `<div class="cal-day empty"></div>`;
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(currentCalYear, currentCalMonth, day);
+    const dateStr = formatDate(d);
+    
+    let isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    let rec = records[dateStr];
+    
+    let cls = '';
+    if (isWeekend) {
+      cls = 'holiday';
+    } else if (rec === 'P') {
+      cls = 'present'; mPres++;
+    } else if (rec === 'A') {
+      cls = 'absent'; mAbs++;
+    } else if (d > today) {
+      cls = 'future';
+    } else {
+      cls = 'empty';
+    }
+    
+    // highlight today if we are in current month
+    if (dateStr === todayStr) cls += ' current-day';
+    
+    calEl.innerHTML += `<div class="cal-day ${cls}" ${dateStr === todayStr ? 'style="border:2px solid var(--accent);"' : ''}>${day}</div>`;
+  }
   
   // Update Pie Chart
   if (pieChartInstance) pieChartInstance.destroy();
   pieChartInstance = new Chart(document.getElementById('attPieChart').getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: [`Present (${data.present})`, `Absent (${data.absent})`],
-      datasets: [{ data:[data.present, data.absent], backgroundColor:['#34d399','#fb7185'], borderWidth:0, hoverOffset:6 }]
+      labels: [`Present (${mPres})`, `Absent (${mAbs})`],
+      datasets: [{ data:[mPres, mAbs], backgroundColor:['#34d399','#fb7185'], borderWidth:0, hoverOffset:6 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { position:'bottom', labels:{ font:{family:'Sora',size:12}, padding:14 } } }
     }
   });
-  
-  // Update Calendar
-  const calEl = document.getElementById('calGrid');
-  calEl.innerHTML = '';
-  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  days.forEach(d => { calEl.innerHTML += `<div class="cal-day header">${d}</div>`; });
-  
-  // April 1 2026 is Wednesday (index 2)
-  for (let i = 0; i < 2; i++) calEl.innerHTML += `<div class="cal-day empty"></div>`;
-  
-  for (let i = 0; i < 30; i++) {
-    // Determine if it's weekend (Sat=5, Sun=6)
-    // i=0 is Apr 1 (Wed). Offset = 2. Total = i+2.
-    let isWeekend = (i + 2) % 7 >= 5;
-    
-    let a = data.calendar[i] || '';
-    if (isWeekend) a = 'H';
-    
-    let cls = '';
-    if (isWeekend) cls = 'holiday';
-    else if (a === 'P') cls = 'present';
-    else if (a === 'A') cls = 'absent';
-    else if (a === 'H') cls = 'holiday';
-    else if (i < 28) cls = 'empty';
-    else cls = 'future';
-    
-    calEl.innerHTML += `<div class="cal-day ${cls}">${i + 1}</div>`;
-  }
 }
 
-// Initial render
-document.addEventListener('DOMContentLoaded', () => {
-  renderSubjectDetails();
-});
-
+function renderLectureTable() {
+  const tbody = document.getElementById('lectureTable');
+  tbody.innerHTML = '';
+  
+  // Collect all records across subjects
+  let allRecords = [];
+  subjectsBase.forEach(s => {
+    for (const date in attendanceData[s.code].records) {
+      allRecords.push({
+        dateStr: date,
+        sub: s.name,
+        status: attendanceData[s.code].records[date] === 'P' ? 'Present' : 'Absent'
+      });
+    }
+  });
+  
+  // sort by date descending
+  allRecords.sort((a,b) => b.dateStr.localeCompare(a.dateStr));
+  
+  // take top 10
+  const top10 = allRecords.slice(0, 10);
+  
+  top10.forEach(l => {
+    const ok = l.status === 'Present';
+    const dObj = new Date(l.dateStr);
+    const dFmt = dObj.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    tbody.innerHTML += `<tr>
+      <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${dFmt}</td>
+      <td style="font-weight:600;">${l.sub}</td>
+      <td style="color:var(--muted); font-size:0.85rem;">Regular Lecture</td>
+      <td><span class="badge ${ok?'badge-green':'badge-red'}">${l.status}</span></td>
+    </tr>`;
+  });
+}
 </script>
 </body>
 </html>
