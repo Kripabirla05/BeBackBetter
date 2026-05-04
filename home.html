@@ -427,10 +427,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('infoRollNo').textContent = user.id;
     document.getElementById('profileAvatar').textContent = firstName.substring(0, 2).toUpperCase();
     
-    if (document.getElementById('infoDob')) document.getElementById('infoDob').textContent = user.dob || '12 June 2006';
-    if (document.getElementById('infoAdYear')) document.getElementById('infoAdYear').textContent = user.adYear || '2025';
-    if (document.getElementById('infoProgram')) document.getElementById('infoProgram').textContent = user.program || 'BE CSE AIML';
-    if (document.getElementById('infoPhone')) document.getElementById('infoPhone').textContent = user.phone || '+91 7988756443';
+    if (document.getElementById('infoDob')) document.getElementById('infoDob').textContent = user.dob ;
+    if (document.getElementById('infoAdYear')) document.getElementById('infoAdYear').textContent = user.adYear ;
+    if (document.getElementById('infoProgram')) document.getElementById('infoProgram').textContent = user.program ;
+    if (document.getElementById('infoPhone')) document.getElementById('infoPhone').textContent = user.phone ;
     
     document.getElementById('cgpaValue').textContent = user.cgpa;
     document.getElementById('cgpaBar').style.width = (user.cgpa * 10) + '%';
