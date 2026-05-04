@@ -337,35 +337,20 @@
     <div class="overview-grid">
       <!-- Current Courses -->
       <div class="course-list-card anim-fade-up delay-3">
-        <div class="section-title" style="font-size:1.1rem;">Current Semester Courses</div>
-        <div class="course-row">
-          <div>
-            <div class="course-name">Fundamentals of C Programming</div>
-            <div class="course-code">24CSE0107 &bull; 5 Credits</div>
-          </div>
-          <div class="course-grade">A</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+          <div class="section-title" style="margin-bottom:0; font-size:1.1rem;">Semester Courses</div>
+          <select id="semSelect" onchange="renderSemCourses()" style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); font-family:'Sora',sans-serif; outline:none; font-size:0.85rem; background:var(--paper); color:var(--ink); cursor:pointer;">
+            <option value="1">Semester 1</option>
+            <option value="2" selected>Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
         </div>
-        <div class="course-row">
-          <div>
-            <div class="course-name">Frontend Engineering — I</div>
-            <div class="course-code">25CSE0105 &bull; 3 Credits</div>
-          </div>
-          <div class="course-grade">A</div>
-        </div>
-        <div class="course-row">
-          <div>
-            <div class="course-name">Foundations of AI Algorithms</div>
-            <div class="course-code">25CAI0102 &bull; 3 Credits</div>
-          </div>
-          <div class="course-grade">A+</div>
-        </div>
-        <div class="course-row">
-          <div>
-            <div class="course-name">OS & Linux Fundamentals</div>
-            <div class="course-code">25CSE0104 &bull; 3 Credits</div>
-          </div>
-          <div class="course-grade">A+</div>
-        </div>
+        <div id="courseListContainer"></div>
       </div>
 
       <!-- Weekly Schedule -->
@@ -458,39 +443,97 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Render initial schedule
   setScheduleDay('Mon', document.querySelector('.day-btn.active'));
+  
+  // Render initial semester courses
+  renderSemCourses();
 });
+
+// Semester Courses Data and Logic
+const homeSemesterData = {
+  1: {
+    status: 'done',
+    subjects: [
+      { name: 'Python', code: '24CSE0101 &bull; 5 Credits', grade: 'A+' },
+      { name: 'Linear Algebra & Calculus', code: '24MAT0101 &bull; 4 Credits', grade: 'A' },
+      { name: 'Digital Electronics and Computer Architecture', code: '24PHY0101 &bull; 3 Credits', grade: 'B+' },
+      { name: 'Web Development', code: '24HUM0101 &bull; 2 Credits', grade: 'A' }
+    ]
+  },
+  2: {
+    status: 'active',
+    subjects: [
+      { name: 'Fundamentals of C Programming', code: '24CSE0107 &bull; 5 Credits', grade: 'A' },
+      { name: 'Frontend Engineering — I', code: '25CSE0105 &bull; 3 Credits', grade: 'A' },
+      { name: 'Foundations of AI Algorithms', code: '25CAI0102 &bull; 3 Credits', grade: 'A+' },
+      { name: 'OS & Linux Fundamentals', code: '25CSE0104 &bull; 3 Credits', grade: 'A+' }
+    ]
+  },
+  3: { status: 'locked' },
+  4: { status: 'locked' },
+  5: { status: 'locked' },
+  6: { status: 'locked' },
+  7: { status: 'locked' },
+  8: { status: 'locked' }
+};
+
+function renderSemCourses() {
+  const sem = document.getElementById('semSelect').value;
+  const container = document.getElementById('courseListContainer');
+  const data = homeSemesterData[sem];
+  
+  if (data.status === 'locked') {
+    container.innerHTML = `
+      <div style="padding:40px 0; text-align:center; color:var(--muted); border:2px dashed var(--border); border-radius:8px; margin-top:10px; background:var(--paper);">
+        <i class="fa-solid fa-lock" style="font-size:2rem; margin-bottom:10px; color:var(--muted);"></i>
+        <p style="font-size:0.9rem; font-weight:600; color:var(--ink); margin:0;">THIS SEMESTER IS NOT STARTED YET</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  data.subjects.forEach(sub => {
+    html += `
+      <div class="course-row">
+        <div>
+          <div class="course-name">${sub.name}</div>
+          <div class="course-code">${sub.code}</div>
+        </div>
+        <div class="course-grade">${sub.grade}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
 
 // Weekly Schedule Data and Logic
 const weeklySchedule = {
   'Mon': [
-    { time: '4:10 PM - 5:50 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther <br> • Dr. Sharanjit', color: 'var(--accent2)' },
-    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent)' },
-    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '7:50 PM - 9:20 PM', subject: 'Discrete Mathematics', room: 'Room No. 503, Martin Luther <br> • Mrs. Swati', color: '#a855f7' }
+    { time: '4:10 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '6:50 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
+    { time: '7:30 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
   ],
   'Tue': [
-    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent)' },
-    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther <br> • Dr. Gagandeep', color: 'var(--accent2)' },
-    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '7:50 PM - 9:20 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther <br> • Dr. Sharanjit', color: 'var(--accent2)' }
+    { time: '2:00 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' },
+    { time: '3:40 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Tanvi', color: 'var(--accent2)' },
+    { time: '5:20 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '6:00 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' }
   ],
   'Wed': [
-    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther <br> • Dr. Gagandeep', color: 'var(--accent)' },
-    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent2)' },
-    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther <br> • Dr. Yogendra', color: '#a855f7' }
+    { time: '9:00 AM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
+    { time: '10:40 AM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Tanvi', color: 'var(--accent2)' },
+    { time: '12:20 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '1:00 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
   ],
   'Thu': [
-    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent2)' },
-    { time: '5:50 PM - 7:30 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther <br> • Dr. Sharanjit', color: 'var(--accent2)' },
-    { time: '7:30 PM - 7:50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther <br> • Dr. Yogendra', color: 'var(--accent)' }
+    { time: '11:00 AM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '1:00 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '1:40 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' }
   ],
   'Fri': [
-    { time: '4:10 PM - 5:50 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther <br> • Dr. Yogendra', color: '#a855f7' },
-    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther <br> • Dr. Anuj', color: 'var(--accent2)' },
-    { time: '7:30 PM - 8:40 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '8:40 PM - 9:20 PM', subject: 'Discrete Mathematics', room: 'Room No. 503, Martin Luther <br> • Mrs. Swati', color: '#a855f7' }
+    { time: '10:00 AM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' },
+    { time: '11:40 AM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Tanvi', color: 'var(--accent2)' }
   ]
 };
 
@@ -616,4 +659,3 @@ function saveProfile() {
 }
 </script>
 </body>
-</html>
