@@ -128,7 +128,7 @@
     <div class="warn-banner">
       <i class="fa-solid fa-triangle-exclamation"></i>
       <div>
-        <strong>Attention:</strong> Frontend Engineering I attendance is below the 75% minimum threshold. Please attend upcoming classes to stay on track.
+        <strong>Attention:</strong> Frontend Engineering–I attendance is below the 75% minimum threshold. Please attend upcoming classes to stay on track.
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@
             <button onclick="changeMonth(1)" class="btn" style="padding:6px 12px; font-size:0.85rem;"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
         </div>
-        <div style="font-size:0.75rem; color:var(--muted); margin-bottom:16px;">Mon Fri, 4 lectures/week</div>
+        <div style="font-size:0.75rem; color:var(--muted); margin-bottom:16px;">Mon–Fri, 4 lectures/week</div>
         <div class="cal-grid" id="calGrid"></div>
         <div class="status-strip">
           <span><span class="status-dot p"></span>Present</span>
@@ -203,7 +203,6 @@
 </section>
 
 
-</main>
 
 <footer>
   <div>&copy; 2026 Be Back Better — University Progress System</div>
@@ -217,10 +216,10 @@
 <script>
 // Base subject list
 const subjectsBase = [
-  { name:'Fundamentals of C Programming', code:'24CSE0107', coord:'Dr. Rajan Kumar' },
-  { name:'Frontend Engineering — I', code:'25CSE0105', coord:'Dr. Swati Malik' },
-  { name:'Foundations of AI Algorithms', code:'25CAI0102', coord:'Dr. Tanvi Sood' },
-  { name:'OS & Linux Fundamentals', code:'25CSE0104', coord:'Dr. Harshvardhan' }
+  { name:'Fundamentals of C Programming', code:'24CSE0107', coord:'Dr. Anuj' },
+  { name:'Frontend Engineering — I', code:'25CSE0105', coord:'Dr. Yogendra' },
+  { name:'Foundations of AI Algorithms', code:'25CAI0102', coord:'Dr. Gagandeep' },
+  { name:'OS & Linux Fundamentals', code:'25CSE0104', coord:'Dr. Sharanjit' }
 ];
 
 // Helper to format date YYYY-MM-DD
@@ -294,7 +293,6 @@ function markTodayAttendance(status) {
 function renderAll() {
   renderSubjectCards();
   renderSubjectDetails();
-  renderLectureTable();
 }
 
 function calculateStats(code) {
@@ -422,41 +420,6 @@ function renderSubjectDetails() {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { position:'bottom', labels:{ font:{family:'Sora',size:12}, padding:14 } } }
     }
-  });
-}
-
-function renderLectureTable() {
-  const tbody = document.getElementById('lectureTable');
-  tbody.innerHTML = '';
-  
-  // Collect all records across subjects
-  let allRecords = [];
-  subjectsBase.forEach(s => {
-    for (const date in attendanceData[s.code].records) {
-      allRecords.push({
-        dateStr: date,
-        sub: s.name,
-        status: attendanceData[s.code].records[date] === 'P' ? 'Present' : 'Absent'
-      });
-    }
-  });
-  
-  // sort by date descending
-  allRecords.sort((a,b) => b.dateStr.localeCompare(a.dateStr));
-  
-  // take top 10
-  const top10 = allRecords.slice(0, 10);
-  
-  top10.forEach(l => {
-    const ok = l.status === 'Present';
-    const dObj = new Date(l.dateStr);
-    const dFmt = dObj.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-    tbody.innerHTML += `<tr>
-      <td style="font-family:'DM Mono',monospace; font-size:0.8rem;">${dFmt}</td>
-      <td style="font-weight:600;">${l.sub}</td>
-      <td style="color:var(--muted); font-size:0.85rem;">Regular Lecture</td>
-      <td><span class="badge ${ok?'badge-green':'badge-red'}">${l.status}</span></td>
-    </tr>`;
   });
 }
 </script>
