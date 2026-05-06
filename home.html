@@ -226,7 +226,7 @@
 <!-- Hero -->
 <section class="hero">
   <div class="hero-inner anim-fade-up">
-    <h1>Good <span id="timeGreeting"></span>, <span id="greetingName">Harnoor</span>! 👋</h1>
+    <h1>Good <span id="timeGreeting"></span>, <span id="greetingName"></span>! 👋</h1>
     <p>Here's your academic snapshot. You're on track — keep the momentum going.</p>
   </div>
 </section>
@@ -236,10 +236,10 @@
   <div class="container">
     <div class="profile-card anim-fade-up delay-1">
       <div class="profile-left">
-        <div class="avatar" id="profileAvatar">HK</div>
+        <div class="avatar" id="profileAvatar"></div>
         <div>
-          <div class="profile-name" id="profileName">Harnoor Kaur</div>
-          <div class="profile-id" id="profileId">2510992941</div>
+          <div class="profile-name" id="profileName"></div>
+          <div class="profile-id" id="profileId">1</div>
         </div>
         <div class="profile-dept">BE-Computer Science AIML</div>
         <div class="profile-status">Active Student</div>
@@ -258,15 +258,15 @@
         <div class="info-grid">
           <div class="info-item">
             <div class="lbl">Full Name</div>
-            <div class="val" id="infoFullName">Harnoor Kaur</div>
+            <div class="val" id="infoFullName"></div>
           </div>
           <div class="info-item">
             <div class="lbl">Date of Birth</div>
-            <div class="val" id="infoDob">12 June 2006</div>
+            <div class="val" id="infoDob"></div>
           </div>
           <div class="info-item">
             <div class="lbl">University Roll No.</div>
-            <div class="val" id="infoRollNo">2510992941</div>
+            <div class="val" id="infoRollNo"></div>
           </div>
           <div class="info-item">
             <div class="lbl">Admission Year</div>
@@ -278,11 +278,11 @@
           </div>
           <div class="info-item">
             <div class="lbl">Phone</div>
-            <div class="val" id="infoPhone">+91 7988756443</div>
+            <div class="val" id="infoPhone"></div>
           </div>
         </div>
         <div class="cgpa-display">
-          <div class="cgpa-val" id="cgpaValue">9.2</div>
+          <div class="cgpa-val" id="cgpaValue"></div>
           <div class="cgpa-info">
             <div class="cgpa-label">Current CGPA (out of 10)</div>
             <div class="progress-track" style="width:200px; margin-top:8px;">
@@ -302,28 +302,28 @@
       <div class="stat-card">
         <div class="icon-circle blue"><i class="fa-solid fa-book-open"></i></div>
         <div>
-          <div class="stat-val" id="statCredits">13</div>
+          <div class="stat-val" id="statCredits"></div>
           <div class="stat-lbl">Credits Earned</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="icon-circle green"><i class="fa-solid fa-circle-check"></i></div>
         <div>
-          <div class="stat-val" id="statAttendance">87%</div>
+          <div class="stat-val" id="statAttendance"></div>
           <div class="stat-lbl">Attendance</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="icon-circle red"><i class="fa-solid fa-file-lines"></i></div>
         <div>
-          <div class="stat-val" id="statAssignments">11 / 14</div>
+          <div class="stat-val" id="statAssignments"></div>
           <div class="stat-lbl">Assignments Done</div>
         </div>
       </div>
       <div class="stat-card">
         <div class="icon-circle yellow"><i class="fa-solid fa-star"></i></div>
         <div>
-          <div class="stat-val" id="statGrade">A+</div>
+          <div class="stat-val" id="statGrade"></div>
           <div class="stat-lbl">Top Grade This Sem</div>
         </div>
       </div>
@@ -415,7 +415,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const loggedInUser = sessionStorage.getItem('loggedInUser') || '24CSE001';
+  const loggedInUser = sessionStorage.getItem('loggedInUser') ;
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const user = users[loggedInUser];
   if (user) {
@@ -427,10 +427,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('infoRollNo').textContent = user.id;
     document.getElementById('profileAvatar').textContent = firstName.substring(0, 2).toUpperCase();
     
-    if (document.getElementById('infoDob')) document.getElementById('infoDob').textContent = user.dob ;
-    if (document.getElementById('infoAdYear')) document.getElementById('infoAdYear').textContent = user.adYear ;
-    if (document.getElementById('infoProgram')) document.getElementById('infoProgram').textContent = user.program ;
-    if (document.getElementById('infoPhone')) document.getElementById('infoPhone').textContent = user.phone ;
+    if (document.getElementById('infoDob')) document.getElementById('infoDob').textContent = user.dob;
+    if (document.getElementById('infoAdYear')) document.getElementById('infoAdYear').textContent = user.adYear || '2025';
+    if (document.getElementById('infoProgram')) document.getElementById('infoProgram').textContent = user.program;
+    if (document.getElementById('infoPhone')) document.getElementById('infoPhone').textContent = user.phone;
     
     document.getElementById('cgpaValue').textContent = user.cgpa;
     document.getElementById('cgpaBar').style.width = (user.cgpa * 10) + '%';
@@ -509,31 +509,34 @@ function renderSemCourses() {
 // Weekly Schedule Data and Logic
 const weeklySchedule = {
   'Mon': [
-    { time: '4:10 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
-    { time: '6:50 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
-    { time: '7:30 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '7:50 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
+    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
+    { time: '7:30 PM - 7: 50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
   ],
   'Tue': [
-    { time: '2:00 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' },
-    { time: '3:40 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Tanvi', color: 'var(--accent2)' },
-    { time: '5:20 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '6:00 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' }
+    { time: '4:10 PM - 5:50 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Gagandeep', color: 'var(--accent2)' },
+    { time: '7:30 PM - 7: 50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' }
   ],
   'Wed': [
-    { time: '9:00 AM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
-    { time: '10:40 AM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Tanvi', color: 'var(--accent2)' },
-    { time: '12:20 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '1:00 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
+    { time: '4:10 PM - 5:50 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Gagandeep', color: 'var(--accent2)' },
+    { time: '7:30 PM - 7: 50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
   ],
   'Thu': [
-    { time: '11:00 AM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
-    { time: '1:00 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
-    { time: '1:40 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' }
+    { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
+    { time: '5:50 PM - 7:30 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' },
+    { time: '7:30 PM - 7: 50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' }
   ],
   'Fri': [
-    { time: '10:00 AM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' },
-    { time: '11:40 AM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Tanvi', color: 'var(--accent2)' }
+    { time: '4:10 PM - 5:50 PM', subject: 'Frontend Engineering', room: 'Room No. 503, Martin Luther • Dr. Yogendra', color: '#a855f7' },
+    { time: '5:50 PM - 7:30 PM', subject: 'Foundations of AI Algorithms', room: 'Room No. 503, Martin Luther • Dr. Gagandeep', color: 'var(--accent2)' },
+    { time: '7:30 PM - 7: 50 PM', subject: 'Break', room: '', color: 'var(--accent3)' },
+    { time: '7:50 PM - 9:20 PM', subject: 'OS & Linux Fundamentals', room: 'Room No. 503, Martin Luther • Dr. Sharanjit', color: 'var(--accent)' }
   ]
 };
 
@@ -640,8 +643,8 @@ function closeEditModal() {
 }
 
 function saveProfile() {
-  const loggedInUser = sessionStorage.getItem('loggedInUser') || '24CSE001';
-  let users = JSON.parse(localStorage.getItem('users') || '{}');
+  const loggedInUser = sessionStorage.getItem('loggedInUser') ;
+  let users = JSON.parse(localStorage.getItem('users') );
   let user = users[loggedInUser];
   
   if (user) {
