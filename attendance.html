@@ -74,18 +74,7 @@
 .status-dot.h { background: rgba(37,99,235,0.3); }
 .status-dot.f { background: var(--paper); border: 1px solid var(--border); }
 
-/* Warning banner */
-.warn-banner {
-  background: rgba(245,158,11,0.1);
-  border: 1px solid rgba(245,158,11,0.3);
-  border-radius: var(--r);
-  padding: 14px 18px;
-  display: flex; align-items: center; gap: 12px;
-  font-size: 0.875rem;
-  color: #92400e;
-  margin-bottom: 24px;
-}
-.warn-banner i { color: #f59e0b; font-size: 1.1rem; flex-shrink: 0; }
+
 </style>
 </head>
 <body>
@@ -122,17 +111,7 @@
   </div>
 </section>
 
-<!-- Warning -->
-<section style="padding:30px 0 0;">
-  <div class="container">
-    <div class="warn-banner">
-      <i class="fa-solid fa-triangle-exclamation"></i>
-      <div>
-        <strong>Attention:</strong> Frontend Engineering–I attendance is below the 75% minimum threshold. Please attend upcoming classes to stay on track.
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <!-- Mark Attendance -->
 <section style="padding:30px 0 0;">
@@ -214,7 +193,7 @@
 </footer>
 
 <script>
-// Base subject list
+// subject list
 const subjectsBase = [
   { name:'Fundamentals of C Programming', code:'24CSE0107', coord:'Dr. Anuj' },
   { name:'Frontend Engineering — I', code:'25CSE0105', coord:'Dr. Yogendra' },
@@ -222,7 +201,7 @@ const subjectsBase = [
   { name:'OS & Linux Fundamentals', code:'25CSE0104', coord:'Dr. Sharanjit' }
 ];
 
-// Helper to format date YYYY-MM-DD
+// date format
 function formatDate(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
@@ -230,16 +209,16 @@ function formatDate(d) {
 const today = new Date();
 const todayStr = formatDate(today);
 
-// Generate dummy data from Jan 1 2026 to yesterday
+// Generate data from 1jan to current date
 function generateMockData() {
   let data = {};
   subjectsBase.forEach(s => {
     data[s.code] = { records: {} };
-    let d = new Date(today.getFullYear(), 0, 1); // Jan 1 of current year
+    let d = new Date(today.getFullYear(), 0, 1); 
     while(d < today) {
       const dayOfWeek = d.getDay();
-      if(dayOfWeek !== 0 && dayOfWeek !== 6) { // Mon-Fri
-        // Randomly assign P or A. P 85% of time.
+      if(dayOfWeek !== 0 && dayOfWeek !== 6) { 
+       
         data[s.code].records[formatDate(d)] = Math.random() > 0.15 ? 'P' : 'A';
       }
       d.setDate(d.getDate() + 1);
@@ -255,7 +234,7 @@ if (!attendanceData) {
   localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
 }
 
-let currentCalMonth = today.getMonth(); // 0-11
+let currentCalMonth = today.getMonth(); 
 let currentCalYear = today.getFullYear();
 let pieChartInstance = null;
 
@@ -422,6 +401,8 @@ function renderSubjectDetails() {
     }
   });
 }
+
+
 </script>
 </body>
 </html>
