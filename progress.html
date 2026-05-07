@@ -92,7 +92,7 @@
   </div>
 </section>
 
-<!-- Overall stats -->
+
 <section style="padding:50px 0 0;">
   <div class="container">
     <div class="grid-4" style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
@@ -216,30 +216,31 @@ const semData = {
     ]
   }
 };
+// assignments linked to sem tabs 
 const assignData = {
   '24CSE0107': [
-    { title:'Assignment 1 – Variables & Loops', due:'Submitted', score:'18/20' },
-    { title:'Assignment 2 – Functions & Arrays', due:'Submitted', score:'19/20' },
-    { title:'Lab Test – Pointers', due:'Submitted', score:'28/30' },
+    { title:'Assignment 1 - Variables & Loops', due:'Submitted', score:'18/20' },
+    { title:'Assignment 2 - Functions & Arrays', due:'Submitted', score:'19/20' },
+    { title:'Lab Test - Pointers', due:'Submitted', score:'28/30' },
   ],
   '25CSE0105': [
-    { title:'Lab 1 – HTML Basics', due:'Submitted', score:'20/20' },
-    { title:'Lab 2 – CSS Flexbox', due:'Due: 05-May', score:'—' },
-    { title:'Mini Project – Portfolio', due:'Due: 15-May', score:'—' },
+    { title:'Lab 1 - HTML Basics', due:'Submitted', score:'20/20' },
+    { title:'Lab 2 - CSS Flexbox', due:'Due: 05-May', score:'—' },
+    { title:'Mini Project - Portfolio', due:'Due: 15-May', score:'—' },
   ],
   '25CAI0102': [
-    { title:'Assignment 1 – Search Algorithms', due:'Submitted', score:'15/15' },
-    { title:'Assignment 2 – Heuristics', due:'Submitted', score:'14/15' },
+    { title:'Assignment 1 - Search Algorithms', due:'Submitted', score:'15/15' },
+    { title:'Assignment 2 - Heuristics', due:'Submitted', score:'14/15' },
     { title:'Final Report', due:'Submitted', score:'48/50' },
   ],
   '25CSE0104': [
-    { title:'Lab 1 – Linux Commands', due:'Submitted', score:'19/20' },
-    { title:'Lab 2 – Process Management', due:'Due: 30-Apr', score:'—' },
-    { title:'Lab 3 – Shell Scripting', due:'Due: 10-May', score:'—' },
+    { title:'Lab 1 - Linux Commands', due:'Submitted', score:'19/20' },
+    { title:'Lab 2 - Process Management', due:'Due: 30-Apr', score:'—' },
+    { title:'Lab 3 - Shell Scripting', due:'Due: 10-May', score:'—' },
   ],
   '24CSE0101': [
-    { title:'Assignment 1 – Hello World', due:'Submitted', score:'10/10' },
-    { title:'Assignment 2 – Control Flow', due:'Submitted', score:'9/10' },
+    { title:'Assignment 1 - Hello World', due:'Submitted', score:'10/10' },
+    { title:'Assignment 2 - Control Flow', due:'Submitted', score:'9/10' },
   ],
   '24MAT0101': [
     { title:'Problem Set 1', due:'Submitted', score:'38/40' },
@@ -314,7 +315,7 @@ function loadAssign(code, el) {
   });
   html += `</div>`;
   box.innerHTML = html;
-  box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  
 }
 
 loadSem(2);
