@@ -261,7 +261,7 @@ body {
       <label>Student ID</label>
       <div class="input-wrap">
         <i class="fa-solid fa-id-card"></i>
-        <input type="text" id="studentId" placeholder="e.g. 24CSE001" autocomplete="off">
+        <input type="text" id="studentId" placeholder="Enter your ID" autocomplete="off">
       </div>
       <div class="error-msg" id="idError">Please enter your Student ID.</div>
     </div>
@@ -326,9 +326,8 @@ function handleLogin() {
     if (!name) { document.getElementById('nameError').style.display = 'block'; return; }
     if (!pass) { document.getElementById('passError').innerText = 'Please enter a password.'; document.getElementById('passError').style.display = 'block'; return; }
     if (users[id]) { document.getElementById('idError').innerText = 'User already exists. Try signing in.'; document.getElementById('idError').style.display = 'block'; return; }
-    
-    // Generate random mock stats for the new user
-    const newCgpa = (Math.random() * 4 + 6).toFixed(1); // Random between 6.0 and 10.0
+
+    const newCgpa = (Math.random() * 4 + 6).toFixed(1); 
     const newAtt = Math.floor(Math.random() * 30 + 70) + '%';
     const earned = Math.floor(Math.random() * 20 + 5);
     users[id] = {
@@ -353,7 +352,6 @@ function handleLogin() {
     sessionStorage.setItem('loggedIn', 'true');
     window.location.href = 'home.html';
   } else {
-    // Login
     if (!users[id] || users[id].pass !== pass) {
       document.getElementById('passError').innerText = 'Invalid credentials. Please try again.';
       document.getElementById('passError').style.display = 'block';
