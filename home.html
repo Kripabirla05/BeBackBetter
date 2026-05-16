@@ -440,15 +440,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('statAssignments').textContent = user.assignments;
     document.getElementById('statGrade').textContent = user.topGrade;
   }
-  
-  // Render initial schedule
+
   setScheduleDay('Mon', document.querySelector('.day-btn.active'));
   
-  // Render initial semester courses
+
   renderSemCourses();
 });
 
-// Semester Courses Data and Logic
 const homeSemesterData = {
   1: {
     status: 'done',
@@ -456,7 +454,7 @@ const homeSemesterData = {
       { name: 'Python', code: '24CSE0101 &bull; 5 Credits', grade: 'A+' },
       { name: 'Linear Algebra & Calculus', code: '24MAT0101 &bull; 4 Credits', grade: 'A' },
       { name: 'Digital Electronics and Computer Architecture', code: '24PHY0101 &bull; 3 Credits', grade: 'B+' },
-      { name: 'Web Development', code: '24HUM0101 &bull; 2 Credits', grade: 'A' }
+      { name: 'Web Development', code: '24WEB0101 &bull; 2 Credits', grade: 'A' }
     ]
   },
   2: {
@@ -464,8 +462,8 @@ const homeSemesterData = {
     subjects: [
       { name: 'Fundamentals of C Programming', code: '24CSE0107 &bull; 5 Credits', grade: 'A' },
       { name: 'Frontend Engineering — I', code: '25CSE0105 &bull; 3 Credits', grade: 'A' },
-      { name: 'Foundations of AI Algorithms', code: '25CAI0102 &bull; 3 Credits', grade: 'A+' },
-      { name: 'OS & Linux Fundamentals', code: '25CSE0104 &bull; 3 Credits', grade: 'A+' }
+      { name: 'Foundations of AI Algorithms', code: '25AI0102 &bull; 3 Credits', grade: 'A+' },
+      { name: 'OS & Linux Fundamentals', code: '25OSL0104 &bull; 3 Credits', grade: 'A+' }
     ]
   },
   3: { status: 'locked' },
@@ -506,7 +504,6 @@ function renderSemCourses() {
   container.innerHTML = html;
 }
 
-// Weekly Schedule Data and Logic
 const weeklySchedule = {
   'Mon': [
     { time: '4:10 PM - 5:50 PM', subject: 'Foundations of C programming', room: 'Room No. 503, Martin Luther • Dr. Anuj', color: 'var(--accent2)' },
@@ -568,7 +565,6 @@ function setScheduleDay(day, btn) {
   });
 }
 
-// Hourly quotes
 const quotes = [
   "The secret of getting ahead is getting started. — Mark Twain",
   "It does not matter how slowly you go as long as you do not stop. — Confucius",
@@ -615,7 +611,7 @@ function updateTime() {
 
 updateQuote();
 updateTime();
-// Check if hour changed every minute
+
 setInterval(() => {
   const m = new Date().getMinutes();
   if (m === 0) updateQuote();
@@ -656,7 +652,7 @@ function saveProfile() {
     users[loggedInUser] = user;
     localStorage.setItem('users', JSON.stringify(users));
     
-    // Refresh to show updated details
+    
     window.location.reload();
   }
 }
