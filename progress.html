@@ -9,7 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 /* Sem tabs */
-
+.sem-tabs-bar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px; }
 .stab {
   padding: 8px 18px;
   border-radius: 8px;
@@ -92,7 +92,7 @@
   </div>
 </section>
 
-
+<!-- Overall stats -->
 <section style="padding:50px 0 0;">
   <div class="container">
     <div class="grid-4" style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
@@ -132,14 +132,21 @@
   </div>
 </section>
 
-
+<!-- Semester Tabs -->
+<section style="padding:20px 0 60px; background:var(--paper);">
+  <div class="container">
+    <div class="section-title">Semester Breakdown</div>
+    <div class="sem-tabs-bar" id="semTabs"></div>
+    <div id="semContent"></div>
+  </div>
+</section>
 
 <footer>
   <div>&copy; 2026 Be Back Better — University Progress System</div>
   <div class="foot-links">
     <a href="home.html">Home</a>
     <a href="categories.html">Categories</a>
-    <a href="contact.html">Contact</a>
+    <a href="contact.html">Contact</a> 
   </div>
 </footer>
 
@@ -209,18 +216,16 @@ const semData = {
     ]
   }
 };
-// assignments linked to sem tabs 
-CONSOLE.loG()
 const assignData = {
   '24CSE0107': [
     { title:'Assignment 1 - Variables & Loops', due:'Submitted', score:'18/20' },
     { title:'Assignment 2 - Functions & Arrays', due:'Submitted', score:'19/20' },
-    { title:'Lab Test - Pointers', due:'Submitted', score:'28/30' },
+    { title:'Lab Test  Pointers', due:'Submitted', score:'28/30' },
   ],
   '25CSE0105': [
     { title:'Lab 1 - HTML Basics', due:'Submitted', score:'20/20' },
-    { title:'Lab 2 - CSS Flexbox', due:'Due: 05-May', score:'—' },
-    { title:'Mini Project - Portfolio', due:'Due: 15-May', score:'—' },
+    { title:'Lab 2 -  CSS Flexbox', due:'Due: 05-May', score:'—' },
+    { title:'Mini Project  Portfolio', due:'Due: 15-May', score:'—' },
   ],
   '25CAI0102': [
     { title:'Assignment 1 - Search Algorithms', due:'Submitted', score:'15/15' },
@@ -230,7 +235,7 @@ const assignData = {
   '25CSE0104': [
     { title:'Lab 1 - Linux Commands', due:'Submitted', score:'19/20' },
     { title:'Lab 2 - Process Management', due:'Due: 30-Apr', score:'—' },
-    { title:'Lab 3 - Shell Scripting', due:'Due: 10-May', score:'—' },
+    { title:'Lab 3 -Shell Scripting', due:'Due: 10-May', score:'—' },
   ],
   '24CSE0101': [
     { title:'Assignment 1 - Hello World', due:'Submitted', score:'10/10' },
@@ -253,7 +258,7 @@ for (let i = 1; i <= 8; i++) {
     if (i > 2) { alert('🔒 Semester not started yet. Keep progressing!'); return; }
     document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    loadSem(i);
+    loadSem(i);  
   });
   tabsEl.appendChild(btn);
 }
@@ -309,10 +314,10 @@ function loadAssign(code, el) {
   });
   html += `</div>`;
   box.innerHTML = html;
-  
+
 }
 
 loadSem(2);
 </script>
-</body>
+</body> 
 </html>
